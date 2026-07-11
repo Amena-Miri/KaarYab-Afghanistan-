@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { Opportunity, FilterOptions } from '@/types/opportunity';
 import { initialOpportunities } from '@/data/opportunities';
 
@@ -15,6 +15,9 @@ interface OpportunityContextType {
   toggleSave: (id: string) => void;
   getFilteredOpportunities: () => Opportunity[];
   getOpportunityById: (id: string) => Opportunity | undefined;
+  clearFilters: () => void;
+  getCategoryStats: () => Record<string, number>;
+  getSavedOpportunities: () => Opportunity[];
 }
 
 const OpportunityContext = createContext<OpportunityContextType | undefined>(undefined);
@@ -82,7 +85,6 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
 
   const deleteOpportunity = (id: string) => {
     setOpportunities(prev => prev.filter(opp => opp.id !== id));
-    // Remove from saved if it was saved
     if (savedOpportunities.includes(id)) {
       setSavedOpportunities(prev => prev.filter(savedId => savedId !== id));
     }
@@ -95,7 +97,6 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
         ? prev.filter(savedId => savedId !== id)
         : [...prev, id];
       
-      // Update saves count in opportunities
       setOpportunities(opps => 
         opps.map(opp => 
           opp.id === id 
@@ -108,7 +109,17 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     });
   };
 
-  const getFilteredOpportunities = (): Opportunity[] => {
+  const clearFilters = () => {
+    setFilters({
+      search: '',
+      category: '',
+      location: '',
+      type: '',
+      deadline: ''
+    });
+  };
+
+  const getFilteredOpportunities = useCallback(() => {
     let filtered = [...opportunities];
 
     if (filters.search) {
@@ -138,7 +149,6 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
 
     if (filters.deadline) {
       const now = new Date();
-      const deadlineDate = new Date(filters.deadline);
       
       if (filters.deadline === 'expiring-soon') {
         const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -154,11 +164,23 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     }
 
     return filtered;
-  };
+  }, [opportunities, filters]);
 
   const getOpportunityById = (id: string): Opportunity | undefined => {
     return opportunities.find(opp => opp.id === id);
   };
+
+  const getCategoryStats = useCallback(() => {
+    const stats: Record<string, number> = {};
+    opportunities.forEach(opp => {
+      stats[opp.category] = (stats[opp.category] || 0) + 1;
+    });
+    return stats;
+  }, [opportunities]);
+
+  const getSavedOpportunities = useCallback(() => {
+    return opportunities.filter(opp => savedOpportunities.includes(opp.id));
+  }, [opportunities, savedOpportunities]);
 
   const value = {
     opportunities,
@@ -170,7 +192,10 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     deleteOpportunity,
     toggleSave,
     getFilteredOpportunities,
-    getOpportunityById
+    getOpportunityById,
+    clearFilters,
+    getCategoryStats,
+    getSavedOpportunities
   };
 
   return (
