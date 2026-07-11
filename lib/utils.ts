@@ -22,7 +22,6 @@ export function formatDate(
 
   const d = new Date(date);
 
-<<<<<<< HEAD
 
   if (isNaN(d.getTime())) {
     return 'تاریخ نامعتبر';
@@ -30,13 +29,6 @@ export function formatDate(
 
 
   return new Intl.DateTimeFormat('fa-IR', {
-=======
-  if (isNaN(d.getTime())) {
-    return 'Invalid Date';
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
->>>>>>> 13831a5fb60be39e21f7a443515944aa31ba055e
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -44,7 +36,6 @@ export function formatDate(
 
 }
 
-<<<<<<< HEAD
 
 
 export function formatDateShort(
@@ -65,21 +56,10 @@ export function formatDateShort(
 
 
   return new Intl.DateTimeFormat('fa-IR', {
-=======
-export function formatDateShort(date: string | Date): string {
-  const d = new Date(date);
-
-  if (isNaN(d.getTime())) {
-    return 'Invalid Date';
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
->>>>>>> 13831a5fb60be39e21f7a443515944aa31ba055e
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   }).format(d);
-<<<<<<< HEAD
 
 }
 
@@ -101,11 +81,6 @@ export function getDaysRemaining(
   }
 
 
-=======
-}
-
-export function getDaysRemaining(deadline: string): number {
->>>>>>> 13831a5fb60be39e21f7a443515944aa31ba055e
   const now = new Date();
 
   const deadlineDate = new Date(deadline);
@@ -271,7 +246,6 @@ export function generateId(): string {
 
 }
 
-<<<<<<< HEAD
 
 
 
@@ -361,34 +335,6 @@ export function getCategoryIcon(
 
 
 
-=======
-export function getCategoryColor(category: string): string {
-  const colors: Record<string, string> = {
-    'Job': 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
-    'Internship': 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400',
-    'Scholarship': 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
-    'Online Course': 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400',
-    'Remote Work': 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400',
-    'Training Program': 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400',
-    'Volunteer Work': 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400',
-  };
-  return colors[category] || 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400';
-}
-
-export function getCategoryIcon(category: string): string {
-  const icons: Record<string, string> = {
-    'Job': '💼',
-    'Internship': '🎓',
-    'Scholarship': '📚',
-    'Online Course': '💻',
-    'Remote Work': '🌍',
-    'Training Program': '📝',
-    'Volunteer Work': '🤝',
-  };
-  return icons[category] || '📌';
-}
-
->>>>>>> 13831a5fb60be39e21f7a443515944aa31ba055e
 export const categories = [
 
   'Job',
@@ -438,37 +384,5 @@ export const locations = [
   'Online',
 
   'Other',
-<<<<<<< HEAD
 
 ] as const;
-=======
-] as const;
-
-export function getDeadlineStatus(deadline: string): {
-  status: 'active' | 'expiring' | 'expired';
-  label: string;
-  color: string;
-} {
-  const days = getDaysRemaining(deadline);
-
-  if (days < 0) {
-    return {
-      status: 'expired',
-      label: 'Expired',
-      color: 'text-red-500 bg-red-50 dark:bg-red-900/20',
-    };
-  } else if (days <= 7) {
-    return {
-      status: 'expiring',
-      label: `${days} days left`,
-      color: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20',
-    };
-  } else {
-    return {
-      status: 'active',
-      label: `${days} days left`,
-      color: 'text-green-500 bg-green-50 dark:bg-green-900/20',
-    };
-  }
-}
->>>>>>> 13831a5fb60be39e21f7a443515944aa31ba055e
