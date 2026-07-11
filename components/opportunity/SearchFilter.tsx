@@ -4,6 +4,7 @@ import React from 'react';
 import { useOpportunityContext } from '@/context/OpportunityContext';
 import { categories, opportunityTypes, locations } from '@/lib/utils';
 import { Search, MapPin, Briefcase, Calendar, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const SearchFilter: React.FC = () => {
   const { filters, setFilters } = useOpportunityContext();
@@ -18,9 +19,9 @@ export const SearchFilter: React.FC = () => {
 
   const filterFields = [
     { key: 'search', label: 'Search', icon: Search, type: 'text', placeholder: 'Search by title...' },
-    { key: 'category', label: 'Category', icon: Briefcase, type: 'select', options: categories },
-    { key: 'location', label: 'Location', icon: MapPin, type: 'select', options: locations },
-    { key: 'type', label: 'Type', icon: Briefcase, type: 'select', options: opportunityTypes },
+    { key: 'category', label: 'Category', icon: Briefcase, type: 'select', options: ['', ...categories] },
+    { key: 'location', label: 'Location', icon: MapPin, type: 'select', options: ['', ...locations] },
+    { key: 'type', label: 'Type', icon: Briefcase, type: 'select', options: ['', ...opportunityTypes] },
     { 
       key: 'deadline', 
       label: 'Deadline', 
@@ -34,6 +35,8 @@ export const SearchFilter: React.FC = () => {
       ] 
     },
   ];
+
+  const hasActiveFilters = Object.values(filters).some(value => value !== '');
 
   return (
     <div className="space-y-4">
@@ -59,7 +62,7 @@ export const SearchFilter: React.FC = () => {
                 value={filters[field.key as keyof typeof filters] as string}
                 onChange={(e) => handleChange(field.key, e.target.value)}
                 placeholder={field.placeholder}
-                className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               />
               {filters[field.key as keyof typeof filters] && (
                 <button
@@ -74,11 +77,11 @@ export const SearchFilter: React.FC = () => {
             <select
               value={filters[field.key as keyof typeof filters] as string}
               onChange={(e) => handleChange(field.key, e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
             >
               {field.options?.map((option: any) => (
                 <option key={option.value || option} value={option.value || option}>
-                  {option.label || option}
+                  {option.label || option || `All ${field.label}s`}
                 </option>
               ))}
             </select>
@@ -86,13 +89,16 @@ export const SearchFilter: React.FC = () => {
         </div>
       ))}
 
-      {/* Active Filters Summary */}
-      {Object.values(filters).some(value => value !== '') && (
-        <div className="pt-4 border-t border-gray-200 dark:border-dark-border">
+      {hasActiveFilters && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="pt-4 border-t border-gray-200 dark:border-dark-border"
+        >
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {Object.values(filters).filter(value => value !== '').length} active filters
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   );
