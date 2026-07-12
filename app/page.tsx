@@ -40,8 +40,16 @@ const HomePage: React.FC = () => {
     { name: 'Volunteer', icon: Users, count: opportunities.filter(o => o.category === 'Volunteer Work').length },
   ];
 
-  return (
-    <div className="min-h-screen">
+    return (
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 rounded-lg z-50"
+      >
+        Skip to main content
+      </a>
+
+    <main id="main-content" className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black py-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -240,8 +248,9 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+        </main>
+  </>
+);
 };
 
 export default HomePage;

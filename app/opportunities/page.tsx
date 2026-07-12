@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categories } from '@/lib/utils';
+import { LoadingState } from '@/components/ui/LoadingState';
 
 type ViewMode = 'grid' | 'list';
 
@@ -34,6 +35,18 @@ const OpportunitiesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('all');
   
   const filteredOpportunities = getFilteredOpportunities();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+  const loadOpportunities = async () => {
+    setIsLoading(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 300));
+    setIsLoading(false);
+  };
+  loadOpportunities();
+}, []);
 
   // Set initial filters from URL params
   useEffect(() => {
@@ -80,6 +93,10 @@ const OpportunitiesPage: React.FC = () => {
     { id: 'expiring', label: 'Expiring Soon', icon: Clock },
     { id: 'saved', label: 'Saved', icon: TrendingUp },
   ];
+
+  if (isLoading) {
+  return <LoadingState text="Loading opportunities..." fullScreen />;
+}
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
