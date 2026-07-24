@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useOpportunityContext } from "@/context/OpportunityContext";
 import { OpportunityCard } from "@/components/opportunity/OpportunityCard";
 import { SearchFilter } from "@/components/opportunity/SearchFilter";
@@ -26,8 +26,7 @@ import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 type ViewMode = "grid" | "list";
-
-const OpportunitiesPage = () => {
+const OpportunitiesContent = () => {
   const searchParams = useSearchParams();
   const { getFilteredOpportunities, filters, setFilters, clearFilters } =
     useOpportunityContext();
@@ -293,4 +292,14 @@ const OpportunitiesPage = () => {
   );
 };
 
-export default OpportunitiesPage;
+export default function OpportunitiesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        Loading opportunities...
+      </div>
+    }>
+      <OpportunitiesContent />
+    </Suspense>
+  );
+}
