@@ -207,9 +207,9 @@ Built-in CV management system:
       <img src="./public/readme/home.png" width="350" alt="Home Page">
     </td>
     <td align="center">
-      <b>💼 Opportunities Page</b>
+      <b>📱 Mobile Design</b>
       <br><br>
-      <img src="./public/readme/opportunities.png" width="350" alt="Opportunities Page">
+      <img src="./public/readme/mobile-responsive.png" width="180" alt="Mobile  Design">
     </td>
   </tr>
 
@@ -260,9 +260,9 @@ Built-in CV management system:
       <img src="./public/readme/about.png" width="350" alt="About Page">
     </td>
     <td align="center">
-      <b>📱 Mobile Design</b>
+      <b>💼 Opportunities Page</b>
       <br><br>
-      <img src="./public/readme/mobile-responsive.png" width="180" alt="Mobile  Design">
+      <img src="./public/readme/opportunities.png" width="350" alt="Opportunities Page">
     </td>
   </tr>
 </table>
