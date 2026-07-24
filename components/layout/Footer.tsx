@@ -10,19 +10,19 @@ const Footer: React.FC = () => {
     <footer className="bg-surface border-t border-border mt-auto">
       <div className="container-custom py-20 lg:py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {/* ===== BRAND SECTION ===== */}
+          {/* BRAND SECTION */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-4">
               <div className="relative w-14 h-14 md:w-16 md:h-16 flex-shrink-0">
-  <Image
-    src="/logo.png"
-    alt="KaarYab Afghanistan"
-    fill
-    sizes="(max-width: 768px) 96px, 112px"
-    className="object-contain rounded-xl"
-    priority
-  />
-</div>
+                <Image
+                  src="/logo.png"
+                  alt="KaarYab Afghanistan"
+                  fill
+                  sizes="(max-width: 768px) 96px, 112px"
+                  className="object-contain rounded-xl"
+                  priority
+                />
+              </div>
               <div className="flex flex-col leading-tight">
                 <span className="text-xl md:text-2xl font-extrabold tracking-tight text-text-primary">
                   KaarYab
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* ===== QUICK LINKS ===== */}
+          {/* QUICK LINKS */}
           <div>
             <h3 className="text-lg font-bold text-primary uppercase tracking-wider mb-6">
               Quick Links
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* ===== CATEGORIES ===== */}
+          {/* CATEGORIES */}
           <div>
             <h3 className="text-lg font-bold text-primary uppercase tracking-wider mb-6">
               Categories
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* ===== CONTACT INFO ===== */}
+          {/* CONTACT INFO */}
           <div>
             <h3 className="text-lg font-bold text-primary uppercase tracking-wider mb-6">
               Contact Us
@@ -150,7 +150,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* ===== BOTTOM BAR ===== */}
+        {/* BOTTOM BAR */}
         <div className="mt-14 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-text-secondary text-center md:text-left">

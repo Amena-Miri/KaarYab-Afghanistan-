@@ -16,7 +16,6 @@ import {
   ExternalLink,
   Building,
   Tag,
-  Eye,
 } from "lucide-react";
 import {
   cn,
@@ -46,8 +45,6 @@ export const OpportunityCard: React.FC<OpportunityCardProps> = ({
   const { savedOpportunities, toggleSave } = useOpportunityContext();
 
   const isSaved = savedOpportunities.includes(opportunity.id);
-
-  const daysRemaining = getDaysRemaining(opportunity.deadline);
   const expiringSoon = isExpiringSoon(opportunity.deadline);
   const expired = isExpired(opportunity.deadline);
   const categoryColor = getCategoryColor(opportunity.category);

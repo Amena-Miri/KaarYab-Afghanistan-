@@ -118,7 +118,6 @@ const DashboardPage = () => {
     >
       <div className="container-custom">
         {/* HEADER */}
-        {/* ===== HEADER ===== */}
         <Card className="mb-10 p-8 bg-surface border border-border rounded-3xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-4">

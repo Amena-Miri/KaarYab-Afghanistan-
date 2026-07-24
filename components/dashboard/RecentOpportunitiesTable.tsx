@@ -19,6 +19,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
+import { th } from "date-fns/locale";
 
 interface RecentOpportunitiesTableProps {
   opportunities: Opportunity[];

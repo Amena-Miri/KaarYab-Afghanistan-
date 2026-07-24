@@ -54,11 +54,9 @@ const SavedOpportunitiesPage = () => {
   return (
     <main className="min-h-screen pt-20 lg:pt-24 pb-16">
       <div className="container-custom">
-
         {/* HEADER */}
         <Card className="mb-10 p-8 bg-surface border border-border rounded-3xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-2xl bg-primary/10">
                 <Bookmark className="w-7 h-7 text-primary" />
@@ -92,15 +90,12 @@ const SavedOpportunitiesPage = () => {
                 </Button>
               </Link>
             </div>
-
           </div>
         </Card>
-
 
         {/* STATS */}
         {savedOpps.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -108,9 +103,7 @@ const SavedOpportunitiesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-
                 <Card className="p-5 flex items-center gap-4 bg-surface border border-border rounded-2xl">
-
                   <div
                     className={cn("p-3 rounded-xl", {
                       "bg-primary/10 text-primary": stat.color === "primary",
@@ -127,19 +120,14 @@ const SavedOpportunitiesPage = () => {
                       {stat.value}
                     </p>
 
-                    <p className="text-sm text-text-secondary">
-                      {stat.label}
-                    </p>
+                    <p className="text-sm text-text-secondary">{stat.label}</p>
                   </div>
-
                 </Card>
-
               </motion.div>
             ))}
-
           </div>
         )}
-                {/* CONTENT */}
+        {/* CONTENT */}
 
         <AnimatePresence mode="wait">
           {savedOpps.length > 0 ? (
@@ -149,7 +137,6 @@ const SavedOpportunitiesPage = () => {
               animate={{ opacity: 1 }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
                 {savedOpps.map((opportunity, index) => (
                   <motion.div
                     key={opportunity.id}
@@ -160,27 +147,16 @@ const SavedOpportunitiesPage = () => {
                     <OpportunityCard opportunity={opportunity} />
                   </motion.div>
                 ))}
-
               </div>
 
-
               <div className="mt-10 flex justify-center">
-
-                <Badge
-                  variant="primary"
-                  className="text-sm px-4 py-2"
-                >
+                <Badge variant="primary" className="text-sm px-4 py-2">
                   <BookmarkCheck className="w-4 h-4 mr-2" />
                   {savedOpps.length} opportunities saved
                 </Badge>
-
               </div>
-
-
             </motion.div>
-
           ) : (
-
             <motion.div
               key="empty"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -199,11 +175,8 @@ const SavedOpportunitiesPage = () => {
               />
             </motion.div>
           )}
-
         </AnimatePresence>
-
       </div>
-
     </main>
   );
 };

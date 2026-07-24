@@ -25,9 +25,8 @@ import {
 import { cn } from "@/lib/utils";
 import { CVData } from "@/types/cv";
 
-// =========================
 // TYPES
-// =========================
+
 type FormData = Omit<CVData, "template" | "createdAt" | "updatedAt">;
 
 const defaultForm: FormData = {
@@ -48,9 +47,8 @@ const defaultForm: FormData = {
   projects: [],
 };
 
-// =========================
 // COMPONENT
-// =========================
+
 const CVBuilderPage = () => {
   const { cvData, createCV, updateCV, downloadCV, isLoading } = useCV();
 
@@ -183,7 +181,7 @@ const CVBuilderPage = () => {
 
   return (
     <main className="min-h-screen bg-bg">
-      {/* ===== HERO ===== */}
+      {/* HERO */}
       <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary via-primary to-primary-dark pt-12">
         {" "}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,.15),transparent_45%)]" />
@@ -234,7 +232,7 @@ const CVBuilderPage = () => {
         </div>
       </section>
 
-      {/* ===== CONTENT ===== */}
+      {/* CONTENT */}
       <section className="container-custom py-8">
         <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
           <div>
@@ -265,7 +263,7 @@ const CVBuilderPage = () => {
           </div>
         </div>
 
-        {/* ===== TABS ===== */}
+        {/* TABS */}
         <div className="flex flex-wrap gap-2 mb-6">
           {tabs.map((t) => (
             <button
@@ -284,7 +282,7 @@ const CVBuilderPage = () => {
         </div>
 
         <Card className="p-6 rounded-2xl border-border">
-          {/* ===== PERSONAL ===== */}
+          {/* PERSONAL */}
           {tab === "personal" && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -380,7 +378,7 @@ const CVBuilderPage = () => {
             </motion.div>
           )}
 
-          {/* ===== EXPERIENCE ===== */}
+          {/* EXPERIENCE */}
           {tab === "experience" && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -481,7 +479,7 @@ const CVBuilderPage = () => {
             </motion.div>
           )}
 
-          {/* ===== EDUCATION ===== */}
+          {/* EDUCATION */}
           {tab === "education" && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -589,7 +587,7 @@ const CVBuilderPage = () => {
             </motion.div>
           )}
 
-          {/* ===== SKILLS ===== */}
+          {/* SKILLS */}
           {tab === "skills" && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -628,7 +626,7 @@ const CVBuilderPage = () => {
           )}
         </Card>
 
-        {/* ===== PREVIEW ===== */}
+        {/* PREVIEW */}
         {tab === "preview" && (
           <motion.div
             initial={{ opacity: 0 }}

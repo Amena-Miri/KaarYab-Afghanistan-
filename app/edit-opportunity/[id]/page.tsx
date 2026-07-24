@@ -59,7 +59,7 @@ const EditOpportunityPage = () => {
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // ================= FETCH DATA =================
+  // FETCH DATA 
 
   useEffect(() => {
     const id = params.id as string;
@@ -73,7 +73,7 @@ const EditOpportunityPage = () => {
     setIsLoading(false);
   }, [params.id, getOpportunityById]);
 
-  // ================= UPDATE =================
+  // UPDATE
 
   const handleSubmit = async (data: OpportunityFormValues) => {
     if (!opportunity) return;
@@ -133,7 +133,7 @@ const EditOpportunityPage = () => {
     }
   };
 
-  // ================= DELETE =================
+  // DELETE
 
   const handleDelete = () => {
     setShowDeleteModal(true);
@@ -155,7 +155,7 @@ const EditOpportunityPage = () => {
     }
   };
 
-  // ================= CANCEL =================
+  // CANCEL
 
   const handleCancel = () => {
     if (opportunity) {
@@ -165,25 +165,7 @@ const EditOpportunityPage = () => {
     }
   };
 
-  // ================= ANIMATION =================
-
-  const fadeUp = {
-    initial: {
-      opacity: 0,
-      y: 20,
-    },
-
-    animate: {
-      opacity: 1,
-      y: 0,
-    },
-
-    transition: {
-      duration: 0.4,
-    },
-  };
-
-  // ================= LOADING =================
+  // LOADING 
 
 if (isLoading) {
   return (
@@ -194,7 +176,7 @@ if (isLoading) {
   );
 }
 
-  // ================= NOT FOUND =================
+  // NOT FOUND 
 
   if (!opportunity) {
     return (
@@ -227,7 +209,7 @@ if (isLoading) {
   return (
     <main className="min-h-screen pt-20 lg:pt-24 pb-16">
       <div className="container-custom">
-        {/* ================= HEADER ================= */}
+        {/* HEADER */}
 
         <Card className="mb-8 rounded-3xl border border-border bg-surface p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -269,7 +251,7 @@ if (isLoading) {
           </div>
         </Card>
 
-        {/* ================= QUICK INFO ================= */}
+        {/* QUICK INFO */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
           <Card className="rounded-2xl border border-border bg-surface p-5">
@@ -354,7 +336,7 @@ if (isLoading) {
             </div>
           </Card>
         </div>
-        {/* ================= SUCCESS / ERROR ================= */}
+        {/* SUCCESS / ERROR */}
 
         <AnimatePresence>
           {submitStatus === "success" && (
@@ -442,7 +424,7 @@ if (isLoading) {
           )}
         </AnimatePresence>
 
-        {/* ================= FORM ================= */}
+        {/* FORM */}
 
         <Card
           className="
@@ -489,7 +471,7 @@ if (isLoading) {
           />
         </Card>
 
-        {/* ================= DANGER ZONE ================= */}
+        {/* DANGER ZONE */}
 
         <div
           className="
@@ -561,7 +543,7 @@ if (isLoading) {
           </div>
         </div>
 
-        {/* ================= TIP ================= */}
+        {/* TIP */}
 
         <div
           className="
@@ -616,7 +598,7 @@ if (isLoading) {
         </div>
       </div>
 
-      {/* ================= DELETE MODAL ================= */}
+      {/* DELETE MODAL */}
 
       <ConfirmModal
         isOpen={showDeleteModal}

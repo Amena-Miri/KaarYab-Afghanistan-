@@ -119,7 +119,7 @@ export const Modal: React.FC<ModalProps> = ({
   );
 };
 
-// ===== CONFIRM MODAL =====
+// CONFIRM MODAL
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;

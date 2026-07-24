@@ -260,9 +260,9 @@ Built-in CV management system:
       <img src="./public/readme/about.png" width="350" alt="About Page">
     </td>
     <td align="center">
-      <b>📱 Mobile Responsive Design</b>
+      <b>📱 Mobile Design</b>
       <br><br>
-      <img src="./public/readme/mobile-responsive.png" width="180" alt="Mobile Responsive Design">
+      <img src="./public/readme/mobile-responsive.png" width="180" alt="Mobile  Design">
     </td>
   </tr>
 </table>

@@ -6,7 +6,6 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
   Tooltip,
   Legend,
   BarChart,
@@ -16,6 +15,7 @@ import {
   YAxis,
   LineChart,
   Line,
+  Cell,
 } from "recharts";
 
 interface CategoryChartProps {
@@ -52,10 +52,7 @@ export const CategoryChart: React.FC<CategoryChartProps> = ({
                 }
               >
                 {data.map((item, index) => (
-                  <Cell
-                    key={index}
-                    fill={item.color || primaryColor}
-                  />
+                  <Cell key={index} fill={item.color || primaryColor} />
                 ))}
               </Pie>
 
@@ -121,17 +118,13 @@ export const CategoryChart: React.FC<CategoryChartProps> = ({
         rounded-2xl
       "
     >
-      <h3 className="text-xl font-semibold text-text-primary mb-5">
-        {title}
-      </h3>
+      <h3 className="text-xl font-semibold text-text-primary mb-5">{title}</h3>
 
       {data.length > 0 ? (
         renderChart()
       ) : (
         <div className="h-[300px] flex items-center justify-center">
-          <p className="text-text-secondary">
-            No data available
-          </p>
+          <p className="text-text-secondary">No data available</p>
         </div>
       )}
     </Card>

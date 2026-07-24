@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useOpportunityContext } from '@/context/OpportunityContext';
-import { OpportunityCard } from '@/components/opportunity/OpportunityCard';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import React from "react";
+import Link from "next/link";
+import { useOpportunityContext } from "@/context/OpportunityContext";
+import { OpportunityCard } from "@/components/opportunity/OpportunityCard";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import {
   Search,
   Briefcase,
@@ -27,7 +27,7 @@ import {
   Rocket,
   BarChart3,
   ChevronRight,
-} from 'lucide-react';
+} from "lucide-react";
 
 const HomePage: React.FC = () => {
   const { opportunities } = useOpportunityContext();
@@ -35,97 +35,96 @@ const HomePage: React.FC = () => {
   const featured = opportunities.filter((o) => o.isFeatured).slice(0, 3);
   const recent = opportunities.slice(0, 4);
 
-
-  // ===== STATS DATA =====
+  // STATS DATA
   const stats = [
     {
-      label: 'Total Opportunities',
+      label: "Total Opportunities",
       value: opportunities.length,
       icon: Briefcase,
-      color: 'primary',
+      color: "primary",
     },
     {
-      label: 'Jobs Available',
-      value: opportunities.filter((o) => o.category === 'Job').length,
+      label: "Jobs Available",
+      value: opportunities.filter((o) => o.category === "Job").length,
       icon: TrendingUp,
-      color: 'blue',
+      color: "blue",
     },
     {
-      label: 'Scholarships',
-      value: opportunities.filter((o) => o.category === 'Scholarship').length,
+      label: "Scholarships",
+      value: opportunities.filter((o) => o.category === "Scholarship").length,
       icon: Award,
-      color: 'purple',
+      color: "purple",
     },
     {
-      label: 'Remote Work',
-      value: opportunities.filter((o) => o.type === 'Remote').length,
+      label: "Remote Work",
+      value: opportunities.filter((o) => o.type === "Remote").length,
       icon: Globe,
-      color: 'green',
+      color: "green",
     },
   ];
 
-  // ===== CATEGORIES DATA =====
+  // CATEGORIES DATA
   const categories = [
     {
-      name: 'Jobs',
+      name: "Jobs",
       icon: Briefcase,
-      count: opportunities.filter((o) => o.category === 'Job').length,
+      count: opportunities.filter((o) => o.category === "Job").length,
     },
     {
-      name: 'Internships',
+      name: "Internships",
       icon: GraduationCap,
-      count: opportunities.filter((o) => o.category === 'Internship').length,
+      count: opportunities.filter((o) => o.category === "Internship").length,
     },
     {
-      name: 'Scholarships',
+      name: "Scholarships",
       icon: Award,
-      count: opportunities.filter((o) => o.category === 'Scholarship').length,
+      count: opportunities.filter((o) => o.category === "Scholarship").length,
     },
     {
-      name: 'Remote Work',
+      name: "Remote Work",
       icon: Globe,
-      count: opportunities.filter((o) => o.category === 'Remote Work').length,
+      count: opportunities.filter((o) => o.category === "Remote Work").length,
     },
     {
-      name: 'Courses',
+      name: "Courses",
       icon: BookOpen,
-      count: opportunities.filter((o) => o.category === 'Online Course').length,
+      count: opportunities.filter((o) => o.category === "Online Course").length,
     },
     {
-      name: 'Volunteer',
+      name: "Volunteer",
       icon: Users,
-      count: opportunities.filter((o) => o.category === 'Volunteer Work')
+      count: opportunities.filter((o) => o.category === "Volunteer Work")
         .length,
     },
   ];
 
-  // ===== FEATURES DATA =====
+  // FEATURES DATA
   const features = [
     {
       icon: Search,
-      title: 'Easy Discovery',
-      desc: 'Find opportunities that match your skills and interests with smart search.',
+      title: "Easy Discovery",
+      desc: "Find opportunities that match your skills and interests with smart search.",
     },
     {
       icon: Bookmark,
-      title: 'Save & Track',
-      desc: 'Save favorites and track your application progress.',
+      title: "Save & Track",
+      desc: "Save favorites and track your application progress.",
     },
     {
       icon: Bell,
-      title: 'Get Notified',
-      desc: 'Receive alerts when new opportunities match your profile.',
+      title: "Get Notified",
+      desc: "Receive alerts when new opportunities match your profile.",
     },
     {
       icon: Users,
-      title: 'Community Driven',
-      desc: 'Join a community of Afghan youth sharing opportunities.',
+      title: "Community Driven",
+      desc: "Join a community of Afghan youth sharing opportunities.",
     },
   ];
 
-const heroButtonStyle =
-  'bg-white text-primary hover:bg-white/90 shadow-lg shadow-white/20 hover:shadow-xl hover:shadow-white/30 transition-all duration-300 font-semibold px-5 py-2.5 text-sm sm:px-8 sm:py-3.5 sm:text-base rounded-full';
-  // ===== ANIMATIONS =====
+  const heroButtonStyle =
+    "bg-white text-primary hover:bg-white/90 shadow-lg shadow-white/20 hover:shadow-xl hover:shadow-white/30 transition-all duration-300 font-semibold px-5 py-2.5 text-sm sm:px-8 sm:py-3.5 sm:text-base rounded-full";
+  // ANIMATIONS
   const fadeUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
@@ -148,7 +147,7 @@ const heroButtonStyle =
     },
   };
 
-  // ===== SECTION HEADER =====
+  // SECTION HEADER
   const SectionHeader = ({ badge, icon: Icon, title, subtitle }: any) => (
     <div className="section-header">
       <div className="section-header-badge">
@@ -161,7 +160,7 @@ const heroButtonStyle =
     </div>
   );
 
-  // ===== VIEW ALL BUTTON =====
+  // VIEW ALL BUTTON
   const ViewAllButton = () => (
     <div className="text-center mt-12">
       <Link href="/opportunities">
@@ -191,7 +190,8 @@ const heroButtonStyle =
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-4 py-2 sm:px-6 sm:py-3 text-white text-xs sm:text-sm"            >
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-4 py-2 sm:px-6 sm:py-3 text-white text-xs sm:text-sm"
+            >
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
               Afghanistan's Largest Opportunity Platform
             </motion.div>
@@ -235,22 +235,22 @@ className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-6 md:mt-12 mb-2">
-  {[
-    ['5000+', 'Users'],
-    ['900+', 'Jobs'],
-    ['300+', 'Scholarships'],
-    ['120+', 'Courses'],
-  ].map(([n, t]) => (
-    <div key={t} className="text-center">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-        {n}
-      </h2>
-      <p className="text-green-100 mt-1 sm:mt-2 text-xs sm:text-sm">
-        {t}
-      </p>
-    </div>
-  ))}
-</div>
+              {[
+                ["5000+", "Users"],
+                ["900+", "Jobs"],
+                ["300+", "Scholarships"],
+                ["120+", "Courses"],
+              ].map(([n, t]) => (
+                <div key={t} className="text-center">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+                    {n}
+                  </h2>
+                  <p className="text-green-100 mt-1 sm:mt-2 text-xs sm:text-sm">
+                    {t}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -293,16 +293,16 @@ className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
                   <div
                     className={cn(
-                      'w-20 h-20 mx-auto rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg relative z-10',
+                      "w-20 h-20 mx-auto rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg relative z-10",
                       {
-                        'bg-gradient-to-br from-primary/20 to-primary/5 text-primary':
-                          stat.color === 'primary',
-                        'bg-gradient-to-br from-blue-500/20 to-blue-500/5 text-blue-500':
-                          stat.color === 'blue',
-                        'bg-gradient-to-br from-purple-500/20 to-purple-500/5 text-purple-500':
-                          stat.color === 'purple',
-                        'bg-gradient-to-br from-green-500/20 to-green-500/5 text-green-500':
-                          stat.color === 'green',
+                        "bg-gradient-to-br from-primary/20 to-primary/5 text-primary":
+                          stat.color === "primary",
+                        "bg-gradient-to-br from-blue-500/20 to-blue-500/5 text-blue-500":
+                          stat.color === "blue",
+                        "bg-gradient-to-br from-purple-500/20 to-purple-500/5 text-purple-500":
+                          stat.color === "purple",
+                        "bg-gradient-to-br from-green-500/20 to-green-500/5 text-green-500":
+                          stat.color === "green",
                       }
                     )}
                   >
