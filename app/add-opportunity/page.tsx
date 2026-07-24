@@ -6,14 +6,14 @@ import Link from 'next/link';
 import { useOpportunityContext } from '@/context/OpportunityContext';
 import { OpportunityForm } from '@/components/forms/OpportunityForm';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { ArrowLeft, CheckCircle, AlertCircle, PlusCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, AlertCircle, PlusCircle, Sparkles } from 'lucide-react';
 import { OpportunityFormValues } from '@/lib/validation';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const AddOpportunityPage: React.FC = () => {
+const AddOpportunityPage = () => {
   const router = useRouter();
   const { addOpportunity } = useOpportunityContext();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,7 +24,6 @@ const AddOpportunityPage: React.FC = () => {
     setErrorMessage('');
 
     try {
-      // Parse requirements and tags from comma-separated strings
       const requirements = data.requirements
         .split(',')
         .map(req => req.trim())
@@ -34,7 +33,6 @@ const AddOpportunityPage: React.FC = () => {
         ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
         : [];
 
-      // Add the opportunity
       await addOpportunity({
         title: data.title,
         organization: data.organization,
@@ -50,109 +48,143 @@ const AddOpportunityPage: React.FC = () => {
       });
 
       setSubmitStatus('success');
-      
-      // Redirect after 2 seconds
-      setTimeout(() => {
-        router.push('/opportunities');
-      }, 2000);
+      setTimeout(() => router.push('/opportunities'), 2000);
+
     } catch (error) {
-      console.error('Error adding opportunity:', error);
       setSubmitStatus('error');
       setErrorMessage('Failed to add opportunity. Please try again.');
+
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCancel = () => {
-    router.push('/opportunities');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link 
-              href="/opportunities"
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </Link>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <PlusCircle className="w-8 h-8 text-primary" />
-                Add Opportunity
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Share an opportunity with the community
-              </p>
-            </div>
-          </div>
-        </div>
+    <main className="min-h-screen pt-20 lg:pt-24 pb-16">
+      <div className="container-custom">
 
-        {/* Success/Error Messages */}
+        {/* HEADER */}
+        <Card className="mb-8 p-8 bg-surface border border-border rounded-3xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+            <div className="flex items-center gap-3">
+
+              <Link
+                href="/opportunities"
+                className="p-2 rounded-xl hover:bg-surface-secondary transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-text-secondary" />
+              </Link>
+
+              <div className="flex items-center gap-3">
+
+                <div className="p-3 rounded-2xl bg-primary/10">
+                  <PlusCircle className="w-7 h-7 text-primary" />
+                </div>
+
+                <div>
+                  <h1 className="text-4xl font-bold text-primary mb-2">
+                    Add Opportunity
+                  </h1>
+
+                  <p className="text-text-secondary text-lg">
+                    Share an opportunity with the community
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </Card>
+
+
+        {/* SUCCESS / ERROR */}
+
         <AnimatePresence>
+
           {submitStatus === 'success' && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 flex items-center gap-3"
+              initial={{ opacity:0, y:-20 }}
+              animate={{ opacity:1, y:0 }}
+              exit={{ opacity:0, y:-20 }}
+              className="mb-6 p-4 bg-success/10 border border-success/20 rounded-xl flex items-center gap-3"
             >
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 text-success" />
+
               <div>
-                <p className="font-medium text-green-700 dark:text-green-400">
+                <p className="font-medium text-success">
                   Opportunity Added Successfully!
                 </p>
-                <p className="text-sm text-green-600 dark:text-green-300">
+
+                <p className="text-sm text-success/80">
                   Redirecting to opportunities page...
                 </p>
               </div>
+
             </motion.div>
           )}
+
 
           {submitStatus === 'error' && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 flex items-center gap-3"
+              initial={{ opacity:0, y:-20 }}
+              animate={{ opacity:1, y:0 }}
+              exit={{ opacity:0, y:-20 }}
+              className="mb-6 p-4 bg-error/10 border border-error/20 rounded-xl flex items-center gap-3"
             >
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-error" />
+
               <div>
-                <p className="font-medium text-red-700 dark:text-red-400">
+                <p className="font-medium text-error">
                   Failed to Add Opportunity
                 </p>
-                <p className="text-sm text-red-600 dark:text-red-300">
+
+                <p className="text-sm text-error/80">
                   {errorMessage || 'Please try again later.'}
                 </p>
               </div>
+
             </motion.div>
           )}
+
         </AnimatePresence>
 
-        {/* Form */}
-        <Card className="p-4 sm:p-6">
+
+        {/* FORM */}
+
+        <Card className="p-4 sm:p-6 bg-surface border border-border rounded-3xl">
           <OpportunityForm
             onSubmit={handleSubmit}
-            onCancel={handleCancel}
+            onCancel={() => router.push('/opportunities')}
             isSubmitting={isSubmitting}
             submitLabel="Add Opportunity"
             cancelLabel="Cancel"
           />
         </Card>
 
-        {/* Info Banner */}
-        <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-semibold text-primary">💡 Tip:</span> Make sure to provide accurate and detailed information. 
-            This will help others find and apply to your opportunity more easily.
-          </p>
+
+        {/* TIP */}
+
+        <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-start gap-3">
+
+          <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+
+          <div>
+            <p className="text-sm font-medium text-text-primary">
+              💡 Pro Tip:
+            </p>
+
+            <p className="text-sm text-text-secondary">
+              Make sure to provide accurate and detailed information. This will help others find and apply to your opportunity more easily.
+            </p>
+          </div>
+
         </div>
+
       </div>
-    </div>
+    </main>
   );
 };
 

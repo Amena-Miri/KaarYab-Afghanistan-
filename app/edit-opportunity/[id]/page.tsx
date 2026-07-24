@@ -1,221 +1,635 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useOpportunityContext } from '@/context/OpportunityContext';
-import { OpportunityForm } from '@/components/forms/OpportunityForm';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Edit, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { OpportunityFormValues } from '@/lib/validation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Opportunity } from '@/types/opportunity';
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
-const EditOpportunityPage: React.FC = () => {
+import { useOpportunityContext } from "@/context/OpportunityContext";
+
+import { OpportunityForm } from "@/components/forms/OpportunityForm";
+
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { ConfirmModal } from "@/components/ui/Modal";
+
+import {
+  ArrowLeft,
+  Edit,
+  AlertCircle,
+  CheckCircle,
+  Sparkles,
+  Trash2,
+  Calendar,
+  Building,
+  MapPin,
+  Briefcase,
+} from "lucide-react";
+
+import { motion, AnimatePresence } from "framer-motion";
+
+import { OpportunityFormValues } from "@/lib/validation";
+
+import { Opportunity } from "@/types/opportunity";
+
+import { formatDate, getDaysRemaining, isExpired } from "@/lib/utils";
+import { LoadingState } from "@/components/ui/LoadingState";
+
+const EditOpportunityPage = () => {
   const params = useParams();
+
   const router = useRouter();
-  const { getOpportunityById, editOpportunity } = useOpportunityContext();
+
+  const { getOpportunityById, editOpportunity, deleteOpportunity } =
+    useOpportunityContext();
+
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // ================= FETCH DATA =================
 
   useEffect(() => {
     const id = params.id as string;
-    const opp = getOpportunityById(id);
-    
-    if (opp) {
-      setOpportunity(opp);
+
+    const data = getOpportunityById(id);
+
+    if (data) {
+      setOpportunity(data);
     }
+
     setIsLoading(false);
   }, [params.id, getOpportunityById]);
+
+  // ================= UPDATE =================
 
   const handleSubmit = async (data: OpportunityFormValues) => {
     if (!opportunity) return;
 
     setIsSubmitting(true);
-    setSubmitStatus('idle');
-    setErrorMessage('');
+
+    setSubmitStatus("idle");
+
+    setErrorMessage("");
 
     try {
-      // Parse requirements and tags
       const requirements = data.requirements
-        .split(',')
-        .map(req => req.trim())
-        .filter(req => req.length > 0);
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
 
       const tags = data.tags
-        ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+        ? data.tags
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
         : [];
 
-      // Edit the opportunity
       await editOpportunity(opportunity.id, {
         title: data.title,
+
         organization: data.organization,
+
         category: data.category as any,
+
         location: data.location,
+
         type: data.type as any,
+
         deadline: data.deadline,
+
         description: data.description,
+
         requirements,
+
         applyLink: data.applyLink,
+
         tags,
       });
 
-      setSubmitStatus('success');
-      
-      // Redirect after 2 seconds
+      setSubmitStatus("success");
+
       setTimeout(() => {
         router.push(`/opportunities/${opportunity.id}`);
       }, 2000);
-    } catch (error) {
-      console.error('Error editing opportunity:', error);
-      setSubmitStatus('error');
-      setErrorMessage('Failed to update opportunity. Please try again.');
+    } catch {
+      setSubmitStatus("error");
+
+      setErrorMessage("Failed to update opportunity. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // ================= DELETE =================
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!opportunity) return;
+
+    setIsDeleting(true);
+
+    try {
+      await deleteOpportunity(opportunity.id);
+
+      router.push("/opportunities");
+    } finally {
+      setIsDeleting(false);
+
+      setShowDeleteModal(false);
+    }
+  };
+
+  // ================= CANCEL =================
+
   const handleCancel = () => {
     if (opportunity) {
       router.push(`/opportunities/${opportunity.id}`);
     } else {
-      router.push('/opportunities');
+      router.push("/opportunities");
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading opportunity...</p>
-        </div>
-      </div>
-    );
-  }
+  // ================= ANIMATION =================
+
+  const fadeUp = {
+    initial: {
+      opacity: 0,
+      y: 20,
+    },
+
+    animate: {
+      opacity: 1,
+      y: 0,
+    },
+
+    transition: {
+      duration: 0.4,
+    },
+  };
+
+  // ================= LOADING =================
+
+if (isLoading) {
+  return (
+    <LoadingState
+      fullScreen
+      text="Loading opportunity..."
+    />
+  );
+}
+
+  // ================= NOT FOUND =================
 
   if (!opportunity) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center px-4">
+      <main className="min-h-screen flex items-center justify-center px-4">
         <Card className="max-w-md w-full text-center p-8">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
+
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
             Opportunity Not Found
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The opportunity you're trying to edit doesn't exist or has been removed.
+
+          <p className="text-text-secondary mb-6">
+            The opportunity you want to edit does not exist.
           </p>
+
           <Link href="/opportunities">
             <Button leftIcon={<ArrowLeft className="w-4 h-4" />}>
               Back to Opportunities
             </Button>
           </Link>
         </Card>
-      </div>
+      </main>
     );
   }
 
+  const expired = isExpired(opportunity.deadline);
+
+  const daysRemaining = getDaysRemaining(opportunity.deadline);
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link 
-              href={`/opportunities/${opportunity.id}`}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </Link>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Edit className="w-8 h-8 text-primary" />
-                Edit Opportunity
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Update details for "{opportunity.title}"
-              </p>
+    <main className="min-h-screen pt-20 lg:pt-24 pb-16">
+      <div className="container-custom">
+        {/* ================= HEADER ================= */}
+
+        <Card className="mb-8 rounded-3xl border border-border bg-surface p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Left */}
+
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+                <Edit className="h-8 w-8 text-primary" />
+              </div>
+
+              <div>
+                <Badge variant="primary" className="mb-3">
+                  Edit Opportunity
+                </Badge>
+
+                <h1 className="text-3xl md:text-4xl font-bold text-primary">
+                  Update Opportunity
+                </h1>
+
+                <p className="mt-2 text-text-secondary max-w-2xl">
+                  Update the information below to keep this opportunity accurate
+                  and helpful for students and professionals.
+                </p>
+              </div>
+            </div>
+
+            {/* Right */}
+
+            <div className="flex">
+              <Link href={`/opportunities/${opportunity.id}`}>
+                <Button
+                  variant="outline"
+                  leftIcon={<ArrowLeft className="w-4 h-4" />}
+                >
+                  Back to Details
+                </Button>
+              </Link>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/* Success/Error Messages */}
-        <AnimatePresence>
-          {submitStatus === 'success' && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 flex items-center gap-3"
-            >
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+        {/* ================= QUICK INFO ================= */}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+          <Card className="rounded-2xl border border-border bg-surface p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <Building className="h-6 w-6 text-primary" />
+              </div>
+
               <div>
-                <p className="font-medium text-green-700 dark:text-green-400">
+                <p className="text-xs uppercase tracking-wide text-text-secondary">
+                  Organization
+                </p>
+
+                <p className="font-semibold text-text-primary">
+                  {opportunity.organization}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl border border-border bg-surface p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <MapPin className="h-6 w-6 text-primary" />
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-wide text-text-secondary">
+                  Location
+                </p>
+
+                <p className="font-semibold text-text-primary">
+                  {opportunity.location}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl border border-border bg-surface p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <Briefcase className="h-6 w-6 text-primary" />
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-wide text-text-secondary">
+                  Type
+                </p>
+
+                <p className="font-semibold text-text-primary">
+                  {opportunity.type}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl border border-border bg-surface p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <Calendar className="h-6 w-6 text-primary" />
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-wide text-text-secondary">
+                  Deadline
+                </p>
+
+                <p className="font-semibold text-text-primary">
+                  {formatDate(opportunity.deadline)}
+                </p>
+
+                {!expired ? (
+                  <Badge variant="success" className="mt-2">
+                    {daysRemaining} Days Left
+                  </Badge>
+                ) : (
+                  <Badge variant="error" className="mt-2">
+                    Expired
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </Card>
+        </div>
+        {/* ================= SUCCESS / ERROR ================= */}
+
+        <AnimatePresence>
+          {submitStatus === "success" && (
+            <motion.div
+              initial={{ opacity: 0, y: -15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              className="
+              mb-6
+              flex
+              items-center
+              gap-4
+              rounded-2xl
+              border
+              border-success/20
+              bg-success/10
+              p-5
+            "
+            >
+              <div
+                className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-xl
+              bg-success/10
+            "
+              >
+                <CheckCircle className="h-5 w-5 text-success" />
+              </div>
+
+              <div>
+                <p className="font-semibold text-success">
                   Opportunity Updated Successfully!
                 </p>
-                <p className="text-sm text-green-600 dark:text-green-300">
+
+                <p className="text-sm text-success/80">
                   Redirecting to opportunity details...
                 </p>
               </div>
             </motion.div>
           )}
 
-          {submitStatus === 'error' && (
+          {submitStatus === "error" && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 flex items-center gap-3"
+              exit={{ opacity: 0, y: -15 }}
+              className="
+              mb-6
+              flex
+              items-center
+              gap-4
+              rounded-2xl
+              border
+              border-error/20
+              bg-error/10
+              p-5
+            "
             >
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <div
+                className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-xl
+              bg-error/10
+            "
+              >
+                <AlertCircle className="h-5 w-5 text-error" />
+              </div>
+
               <div>
-                <p className="font-medium text-red-700 dark:text-red-400">
-                  Failed to Update Opportunity
-                </p>
-                <p className="text-sm text-red-600 dark:text-red-300">
-                  {errorMessage || 'Please try again later.'}
+                <p className="font-semibold text-error">Update Failed</p>
+
+                <p className="text-sm text-error/80">
+                  {errorMessage || "Please try again later."}
                 </p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Form */}
-        <Card className="p-4 sm:p-6">
+        {/* ================= FORM ================= */}
+
+        <Card
+          className="
+        rounded-3xl
+        border
+        border-border
+        bg-surface
+        p-6
+        sm:p-8
+      "
+        >
+          <div className="mb-8">
+            <Badge variant="primary" className="mb-3">
+              Opportunity Details
+            </Badge>
+
+            <h2
+              className="
+            text-2xl
+            font-bold
+            text-text-primary
+          "
+            >
+              Update Information
+            </h2>
+
+            <p
+              className="
+            mt-2
+            text-text-secondary
+          "
+            >
+              Modify the opportunity information and save your changes.
+            </p>
+          </div>
+
           <OpportunityForm
             initialData={opportunity}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
             isSubmitting={isSubmitting}
-            submitLabel="Update Opportunity"
+            submitLabel="Save Changes"
             cancelLabel="Cancel"
           />
         </Card>
 
-        {/* Delete Section */}
-        <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-200 dark:border-red-800">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="font-semibold text-red-700 dark:text-red-400">
-                Danger Zone
-              </h3>
-              <p className="text-sm text-red-600 dark:text-red-300">
-                This action cannot be undone. This will permanently delete the opportunity.
-              </p>
+        {/* ================= DANGER ZONE ================= */}
+
+        <div
+          className="
+          mt-8
+          rounded-3xl
+          border
+          border-error/20
+          bg-error/5
+          p-6
+        "
+        >
+          <div
+            className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          justify-between
+          gap-5
+        "
+          >
+            <div className="flex items-start gap-4">
+              <div
+                className="
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+              rounded-2xl
+              bg-error/10
+            "
+              >
+                <AlertCircle className="h-6 w-6 text-error" />
+              </div>
+
+              <div>
+                <h3
+                  className="
+                font-bold
+                text-error
+                text-lg
+              "
+                >
+                  Danger Zone
+                </h3>
+
+                <p
+                  className="
+                mt-1
+                text-sm
+                text-text-secondary
+                max-w-xl
+              "
+                >
+                  Deleting this opportunity is permanent and cannot be undone.
+                </p>
+              </div>
             </div>
-            <Link href={`/opportunities/${opportunity.id}?delete=true`}>
-              <Button variant="danger">
-                Delete Opportunity
-              </Button>
-            </Link>
+
+            <Button
+              variant="danger"
+              leftIcon={<Trash2 className="w-4 h-4" />}
+              onClick={handleDelete}
+              className="w-full sm:w-auto"
+            >
+              Delete Opportunity
+            </Button>
+          </div>
+        </div>
+
+        {/* ================= TIP ================= */}
+
+        <div
+          className="
+          mt-6
+          flex
+          items-start
+          gap-4
+          rounded-3xl
+          border
+          border-primary/20
+          bg-primary/5
+          p-6
+        "
+        >
+          <div
+            className="
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-xl
+          bg-primary/10
+          flex-shrink-0
+        "
+          >
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+
+          <div>
+            <h4
+              className="
+            font-semibold
+            text-text-primary
+          "
+            >
+              Pro Tip
+            </h4>
+
+            <p
+              className="
+            mt-1
+            text-sm
+            text-text-secondary
+            leading-6
+          "
+            >
+              Make sure all details, deadline and application links are updated
+              before saving changes.
+            </p>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ================= DELETE MODAL ================= */}
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDelete}
+        title="Delete Opportunity"
+        message={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        isLoading={isDeleting}
+      />
+    </main>
   );
 };
 

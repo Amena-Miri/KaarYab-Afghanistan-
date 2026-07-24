@@ -1,37 +1,68 @@
-'use client';
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Mail, Phone, MapPin, Send, MessageSquare, User, Building } from 'lucide-react';
+"use client";
 
-const ContactPage: React.FC = () => {
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  User,
+  Building,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+  ArrowLeft,
+} from "lucide-react";
+import { FaGlobe, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/Input";
+
+const ContactPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
 
-    // Simulate API call
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
-      setSubmitStatus('error');
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      setSubmitStatus("success");
+
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch {
+      setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -41,192 +72,303 @@ const ContactPage: React.FC = () => {
   const contactInfo = [
     {
       icon: Mail,
-      label: 'Email',
-      value: 'info@kaaryab.af',
-      href: 'mailto:info@kaaryab.af',
+      label: "Email",
+      value: "info@kaaryab.af",
+      href: "mailto:info@kaaryab.af",
+      color: "primary",
     },
     {
       icon: Phone,
-      label: 'Phone',
-      value: '+93 700 123 456',
-      href: 'tel:+93700123456',
+      label: "Phone",
+      value: "+93 700 123 456",
+      href: "tel:+93700123456",
+      color: "primary",
     },
     {
       icon: MapPin,
-      label: 'Location',
-      value: 'Kabul, Afghanistan',
-      href: '#',
+      label: "Location",
+      value: "Kabul, Afghanistan",
+      href: "#",
+      color: "primary",
     },
   ];
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Get in Touch
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Have questions, suggestions, or want to share an opportunity? 
-            We'd love to hear from you!
-          </p>
-        </div>
+  const socialLinks = [
+    {
+      icon: FaTwitter,
+      href: "#",
+      label: "Twitter",
+      color: "hover:text-blue-500",
+    },
+    {
+      icon: FaLinkedin,
+      href: "#",
+      label: "LinkedIn",
+      color: "hover:text-blue-700",
+    },
+    {
+      icon: FaYoutube,
+      href: "#",
+      label: "Youtube",
+      color: "hover:text-red-500",
+    },
+    {
+      icon: FaGlobe,
+      href: "#",
+      label: "Website",
+      color: "hover:text-primary",
+    },
+  ];
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Information */}
-          <div className="lg:col-span-1">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                Contact Information
-              </h2>
-              <div className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <info.icon className="w-5 h-5 text-primary" />
+  const fadeUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.4 },
+  };
+
+  return (
+    <main className="min-h-screen pt-20 lg:pt-24 pb-16">
+      <div className="container-custom">
+        {/* HEADER */}
+
+        <Card className="mb-10 p-8 bg-surface border border-border rounded-3xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
+            {/* Left */}
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-2xl bg-primary/10">
+                <Mail className="w-7 h-7 text-primary" />
+              </div>
+
+              <div>
+                <h1 className="text-4xl font-bold text-primary mb-2">
+                  Contact Us
+                </h1>
+
+                <p className="text-lg text-text-secondary">
+                  We'd love to hear from you. Get in touch with the KaarYab
+                  team.
+                </p>
+              </div>
+            </div>
+
+            {/* Right */}
+            <Link href="/about">
+              <Button
+                variant="outline"
+                leftIcon={<ArrowLeft className="w-4 h-4" />}
+              >
+                About KaarYab
+              </Button>
+            </Link>
+          </div>
+        </Card>
+        {/* CONTENT */}
+
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* CONTACT INFO */}
+
+          <motion.div {...fadeUp} className="lg:col-span-1">
+            <Card className="rounded-3xl border border-border bg-surface p-6">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-semibold text-text-primary">
+                    Contact Information
+                  </h2>
+
+                  <p className="text-sm text-text-secondary">
+                    Reach us anytime.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {contactInfo.map((info) => (
+                  <a
+                    key={info.label}
+                    href={info.href}
+                    className="flex items-start gap-4 rounded-2xl border border-border bg-background p-4 transition-all hover:border-primary/30"
+                  >
+                    <div
+                      className={cn(
+                        "flex h-11 w-11 items-center justify-center rounded-xl",
+                        {
+                          "bg-primary/10 text-primary":
+                            info.color === "primary",
+                        }
+                      )}
+                    >
+                      <info.icon className="h-5 w-5" />
                     </div>
+
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{info.label}</p>
-                      <a 
-                        href={info.href}
-                        className="text-gray-900 dark:text-white hover:text-primary transition-colors"
-                      >
+                      <p className="text-xs uppercase tracking-wide text-text-secondary">
+                        {info.label}
+                      </p>
+
+                      <p className="font-medium text-text-primary">
                         {info.value}
-                      </a>
+                      </p>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
 
-              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-dark-border">
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+              <div className="mt-8 border-t border-border pt-6">
+                <h3 className="mb-4 font-semibold text-text-primary">
                   Follow Us
                 </h3>
+
                 <div className="flex gap-3">
-                  <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-primary/10 transition-colors">
-                    <span className="sr-only">Twitter</span>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                  </a>
-                  <a href="#" className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-primary/10 transition-colors">
-                    <span className="sr-only">LinkedIn</span>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                  </a>
+                  {socialLinks.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className={cn(
+                        "flex h-11 w-11 items-center justify-center rounded-xl bg-background border border-border transition-all hover:border-primary/30",
+                        item.color
+                      )}
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </a>
+                  ))}
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                  <div className="flex items-center gap-2 text-sm text-text-secondary">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                    Usually replies within 24 hours
+                  </div>
                 </div>
               </div>
             </Card>
-          </div>
+          </motion.div>
 
-          {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                Send Us a Message
-              </h2>
+          {/* CONTACT FORM */}
+
+          <motion.div {...fadeUp} className="lg:col-span-2">
+            <Card className="rounded-3xl border border-border bg-surface p-7">
+              <div className="mb-6">
+                <Badge variant="primary" className="mb-3">
+                  Send Message
+                </Badge>
+
+                <h2 className="text-2xl font-bold text-text-primary">
+                  We'd Love to Hear From You
+                </h2>
+
+                <p className="mt-2 text-text-secondary">
+                  Fill out the form below and we'll get back to you as soon as
+                  possible.
+                </p>
+              </div>
+
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      Your Name
-                    </label>
-                    <div className="relative">
-                      <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        placeholder="John Doe"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        placeholder="john@example.com"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <Input
+                    label="Full Name"
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Full name"
+                    leftIcon={<User className="w-5 h-5" />}
+                  />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Subject
-                  </label>
-                  <div className="relative">
-                    <Building className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
+                  <div>
+                    <Input
+                      label="Email Address"
+                      type="email"
+                      name="email"
                       required
-                      className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      placeholder="How can we help?"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="email@example.com"
+                      leftIcon={<Mail className="w-5 h-5" />}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <Input
+                    label="Subject"
+                    type="text"
+                    name="subject"
+                    required
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="Subject"
+                    leftIcon={<Building className="w-5 h-5" />}
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-text-secondary">
                     Message
                   </label>
-                  <div className="relative">
-                    <MessageSquare className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={5}
-                      className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-                      placeholder="Your message..."
-                    />
-                  </div>
+
+                  <textarea
+                    name="message"
+                    rows={6}
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Write your message..."
+                    className="w-full rounded-2xl border border-input-border bg-input-bg px-4 py-3 text-text-primary outline-none transition-all resize-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  />
                 </div>
 
-                {submitStatus === 'success' && (
-                  <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-4 rounded-lg">
-                    Thank you for your message! We'll get back to you soon.
-                  </div>
-                )}
+                <AnimatePresence>
+                  {submitStatus === "success" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-3 rounded-2xl border border-green-500/20 bg-green-500/10 p-4"
+                    >
+                      <CheckCircle className="h-5 w-5 text-green-500" />
 
-                {submitStatus === 'error' && (
-                  <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 p-4 rounded-lg">
-                    Something went wrong. Please try again.
-                  </div>
-                )}
+                      <p className="text-sm text-green-600 dark:text-green-400">
+                        Thank you! Your message has been sent successfully.
+                      </p>
+                    </motion.div>
+                  )}
+
+                  {submitStatus === "error" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4"
+                    >
+                      <AlertCircle className="h-5 w-5 text-red-500" />
+
+                      <p className="text-sm text-red-600 dark:text-red-400">
+                        Something went wrong. Please try again.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <Button
                   type="submit"
+                  size="lg"
                   isLoading={isSubmitting}
-                  leftIcon={<Send className="w-4 h-4" />}
-                  className="w-full sm:w-auto"
+                  leftIcon={<Send className="h-4 w-4" />}
+                  className="w-full md:w-auto"
                 >
                   Send Message
                 </Button>
               </form>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

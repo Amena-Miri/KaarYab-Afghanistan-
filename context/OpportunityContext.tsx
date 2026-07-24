@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Opportunity, FilterOptions } from '@/types/opportunity';
 import { initialOpportunities } from '@/data/opportunities';
 
@@ -18,6 +18,7 @@ interface OpportunityContextType {
   clearFilters: () => void;
   getCategoryStats: () => Record<string, number>;
   getSavedOpportunities: () => Opportunity[];
+  isLoading: boolean;
 }
 
 const OpportunityContext = createContext<OpportunityContextType | undefined>(undefined);
@@ -31,12 +32,13 @@ export const useOpportunityContext = () => {
 };
 
 interface OpportunityProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ children }) => {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>(initialOpportunities);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [savedOpportunities, setSavedOpportunities] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
     search: '',
     category: '',
@@ -44,6 +46,15 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     type: '',
     deadline: ''
   });
+
+  // Load initial data
+  useEffect(() => {
+    // Simulate API loading
+    setTimeout(() => {
+      setOpportunities(initialOpportunities);
+      setIsLoading(false);
+    }, 500);
+  }, []);
 
   // Load saved opportunities from localStorage
   useEffect(() => {
@@ -62,7 +73,7 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     localStorage.setItem('savedOpportunities', JSON.stringify(savedOpportunities));
   }, [savedOpportunities]);
 
-  const addOpportunity = (opportunityData: Omit<Opportunity, 'id' | 'createdAt'>) => {
+  const addOpportunity = useCallback((opportunityData: Omit<Opportunity, 'id' | 'createdAt'>) => {
     const newOpportunity: Opportunity = {
       ...opportunityData,
       id: crypto.randomUUID(),
@@ -71,9 +82,9 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
       saves: 0
     };
     setOpportunities(prev => [newOpportunity, ...prev]);
-  };
+  }, []);
 
-  const editOpportunity = (id: string, updatedData: Partial<Opportunity>) => {
+  const editOpportunity = useCallback((id: string, updatedData: Partial<Opportunity>) => {
     setOpportunities(prev => 
       prev.map(opp => 
         opp.id === id 
@@ -81,16 +92,14 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
           : opp
       )
     );
-  };
+  }, []);
 
-  const deleteOpportunity = (id: string) => {
+  const deleteOpportunity = useCallback((id: string) => {
     setOpportunities(prev => prev.filter(opp => opp.id !== id));
-    if (savedOpportunities.includes(id)) {
-      setSavedOpportunities(prev => prev.filter(savedId => savedId !== id));
-    }
-  };
+    setSavedOpportunities(prev => prev.filter(savedId => savedId !== id));
+  }, []);
 
-  const toggleSave = (id: string) => {
+  const toggleSave = useCallback((id: string) => {
     setSavedOpportunities(prev => {
       const isSaved = prev.includes(id);
       const newSaved = isSaved 
@@ -107,9 +116,9 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
       
       return newSaved;
     });
-  };
+  }, []);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setFilters({
       search: '',
       category: '',
@@ -117,7 +126,7 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
       type: '',
       deadline: ''
     });
-  };
+  }, []);
 
   const getFilteredOpportunities = useCallback(() => {
     let filtered = [...opportunities];
@@ -166,9 +175,9 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     return filtered;
   }, [opportunities, filters]);
 
-  const getOpportunityById = (id: string): Opportunity | undefined => {
+  const getOpportunityById = useCallback((id: string): Opportunity | undefined => {
     return opportunities.find(opp => opp.id === id);
-  };
+  }, [opportunities]);
 
   const getCategoryStats = useCallback(() => {
     const stats: Record<string, number> = {};
@@ -182,7 +191,7 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     return opportunities.filter(opp => savedOpportunities.includes(opp.id));
   }, [opportunities, savedOpportunities]);
 
-  const value = {
+  const value = useMemo(() => ({
     opportunities,
     savedOpportunities,
     filters,
@@ -195,8 +204,23 @@ export const OpportunityProvider: React.FC<OpportunityProviderProps> = ({ childr
     getOpportunityById,
     clearFilters,
     getCategoryStats,
-    getSavedOpportunities
-  };
+    getSavedOpportunities,
+    isLoading
+  }), [
+    opportunities,
+    savedOpportunities,
+    filters,
+    addOpportunity,
+    editOpportunity,
+    deleteOpportunity,
+    toggleSave,
+    getFilteredOpportunities,
+    getOpportunityById,
+    clearFilters,
+    getCategoryStats,
+    getSavedOpportunities,
+    isLoading
+  ]);
 
   return (
     <OpportunityContext.Provider value={value}>

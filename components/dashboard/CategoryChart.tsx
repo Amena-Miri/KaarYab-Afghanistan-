@@ -1,97 +1,106 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Card } from '@/components/ui/Card';
+import React from "react";
+import { Card } from "@/components/ui/Card";
 import {
+  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
-  Legend,
   Tooltip,
+  Legend,
   BarChart,
   Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   LineChart,
   Line,
-} from 'recharts';
+} from "recharts";
 
 interface CategoryChartProps {
-  data: Array<{
+  data: {
     name: string;
     value: number;
-    color: string;
-  }>;
+    color?: string;
+  }[];
   title: string;
-  type?: 'pie' | 'bar' | 'line';
+  type?: "pie" | "bar" | "line";
 }
-
-const COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
 
 export const CategoryChart: React.FC<CategoryChartProps> = ({
   data,
   title,
-  type = 'pie',
+  type = "pie",
 }) => {
+  const primaryColor = "var(--primary)";
+
   const renderChart = () => {
     switch (type) {
-      case 'pie':
+      case "pie":
         return (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={data}
+                dataKey="value"
                 cx="50%"
                 cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
+                outerRadius={90}
+                label={({ name, percent = 0 }) =>
+                  `${name} ${(percent * 100).toFixed(0)}%`
+                }
               >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                {data.map((item, index) => (
+                  <Cell
+                    key={index}
+                    fill={item.color || primaryColor}
+                  />
                 ))}
               </Pie>
+
               <Tooltip />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
         );
 
-      case 'bar':
+      case "bar":
         return (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
+
               <XAxis dataKey="name" />
               <YAxis />
+
               <Tooltip />
-              <Bar dataKey="value" fill="#10B981">
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
-                ))}
-              </Bar>
+
+              <Bar dataKey="value" fill={primaryColor} radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         );
 
-      case 'line':
+      case "line":
         return (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
+
               <XAxis dataKey="name" />
               <YAxis />
+
               <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="value" 
-                stroke="#10B981" 
-                strokeWidth={2}
-                dot={{ fill: '#10B981', strokeWidth: 2 }}
+
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke={primaryColor}
+                strokeWidth={3}
+                dot={{
+                  fill: primaryColor,
+                  r: 5,
+                }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -103,15 +112,26 @@ export const CategoryChart: React.FC<CategoryChartProps> = ({
   };
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <Card
+      className="
+        p-6
+        bg-surface
+        border
+        border-border
+        rounded-2xl
+      "
+    >
+      <h3 className="text-xl font-semibold text-text-primary mb-5">
         {title}
       </h3>
+
       {data.length > 0 ? (
         renderChart()
       ) : (
         <div className="h-[300px] flex items-center justify-center">
-          <p className="text-gray-500 dark:text-gray-400">No data available</p>
+          <p className="text-text-secondary">
+            No data available
+          </p>
         </div>
       )}
     </Card>

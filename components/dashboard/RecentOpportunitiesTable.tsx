@@ -1,50 +1,75 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Opportunity } from '@/types/opportunity';
-import { formatDate, getCategoryColor, isExpired, isExpiringSoon } from '@/lib/utils';
-import { Eye, Edit, Trash2, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+
+import { Opportunity } from "@/types/opportunity";
+
+import { formatDate, isExpired, isExpiringSoon } from "@/lib/utils";
+
+import {
+  Eye,
+  Edit,
+  Trash2,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 interface RecentOpportunitiesTableProps {
   opportunities: Opportunity[];
   onDelete?: (id: string) => void;
 }
 
-export const RecentOpportunitiesTable: React.FC<RecentOpportunitiesTableProps> = ({
-  opportunities,
-  onDelete,
-}) => {
+export const RecentOpportunitiesTable: React.FC<
+  RecentOpportunitiesTableProps
+> = ({ opportunities, onDelete }) => {
   const getStatusBadge = (deadline: string) => {
     if (isExpired(deadline)) {
-      return <Badge variant="danger">Expired</Badge>;
+      return (
+        <Badge
+          variant="default"
+          className="bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400"
+        >
+          Expired
+        </Badge>
+      );
     }
+
     if (isExpiringSoon(deadline)) {
-      return <Badge variant="warning" className="flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        Expiring Soon
-      </Badge>;
+      return (
+        <Badge variant="warning" className="flex items-center gap-1">
+          <Clock className="w-3 h-3" />
+          Expiring Soon
+        </Badge>
+      );
     }
-    return <Badge variant="success" className="flex items-center gap-1">
-      <CheckCircle className="w-3 h-3" />
-      Active
-    </Badge>;
+
+    return (
+      <Badge variant="success" className="flex items-center gap-1">
+        <CheckCircle className="w-3 h-3" />
+        Active
+      </Badge>
+    );
   };
 
   if (opportunities.length === 0) {
     return (
-      <Card className="p-8 text-center">
+      <Card className="p-8 bg-surface border border-border rounded-2xl text-center">
         <div className="flex flex-col items-center">
-          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-            <AlertCircle className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+            <AlertCircle className="w-8 h-8 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+
+          <h3 className="text-lg font-semibold text-text-primary mb-2">
             No Opportunities Yet
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+
+          <p className="text-text-secondary">
             Start adding opportunities to see them here.
           </p>
         </div>
@@ -53,91 +78,181 @@ export const RecentOpportunitiesTable: React.FC<RecentOpportunitiesTableProps> =
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden bg-surface border border-border rounded-2xl">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-dark-border">
+          <thead className="bg-primary/5 border-b border-border">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <th
+                className="
+                px-4
+                py-3
+                text-left
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Opportunity
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">
+
+              <th
+                className="
+                hidden
+                sm:table-cell
+                px-4
+                py-3
+                text-left
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Category
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">
+
+              <th
+                className="
+                hidden
+                md:table-cell
+                px-4
+                py-3
+                text-left
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Location
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+
+              <th
+                className="
+                hidden
+                lg:table-cell
+                px-4
+                py-3
+                text-left
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Deadline
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+
+              <th
+                className="
+                px-4
+                py-3
+                text-left
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Status
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+
+              <th
+                className="
+                px-4
+                py-3
+                text-right
+                text-xs
+                font-semibold
+                uppercase
+                tracking-wider
+                text-text-secondary
+                "
+              >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-dark-border">
+
+          <tbody className="divide-y divide-border">
             {opportunities.map((opp) => (
-              <tr 
-                key={opp.id}
-                className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-              >
-                <td className="px-4 py-3">
+              <tr key={opp.id} className="hover:bg-primary/5 transition-colors">
+                {/* Opportunity */}
+                <td className="px-4 py-4">
                   <div className="flex flex-col">
-                    <Link 
+                    <Link
                       href={`/opportunities/${opp.id}`}
-                      className="font-medium text-gray-900 dark:text-white hover:text-primary transition-colors"
+                      className="font-semibold text-text-primary hover:text-primary transition-colors"
                     >
                       {opp.title}
                     </Link>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+
+                    <span className="text-sm text-text-secondary">
                       {opp.organization}
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-3 hidden sm:table-cell">
-                  <Badge className={getCategoryColor(opp.category)}>
+
+                {/* Category */}
+                <td className="hidden sm:table-cell px-4 py-4">
+                  <Badge
+                    variant="default"
+                    className="bg-primary/10 text-primary"
+                  >
                     {opp.category}
                   </Badge>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 hidden md:table-cell">
+
+                {/* Location */}
+                <td className="hidden md:table-cell px-4 py-4 text-sm text-text-secondary">
                   {opp.location}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 hidden lg:table-cell">
+
+                {/* Deadline */}
+                <td className="hidden lg:table-cell px-4 py-4 text-sm text-text-secondary">
                   {formatDate(opp.deadline)}
                 </td>
-                <td className="px-4 py-3">
-                  {getStatusBadge(opp.deadline)}
-                </td>
-                <td className="px-4 py-3">
+
+                {/* Status */}
+                <td className="px-4 py-4">{getStatusBadge(opp.deadline)}</td>
+
+                {/* Actions */}
+                <td className="px-4 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <Link href={`/opportunities/${opp.id}`}>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="h-8 w-8 p-0"
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:text-primary hover:bg-primary/10"
                         aria-label="View"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
+
                     <Link href={`/edit-opportunity/${opp.id}`}>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="h-8 w-8 p-0"
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:text-primary hover:bg-primary/10"
                         aria-label="Edit"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </Link>
+
                     {onDelete && (
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:text-primary hover:bg-primary/10"
                         onClick={() => onDelete(opp.id)}
                         aria-label="Delete"
                       >

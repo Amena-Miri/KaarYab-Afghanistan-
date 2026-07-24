@@ -1,12 +1,11 @@
 'use client';
 
-import React from 'react';
 import { useOpportunityContext } from '@/context/OpportunityContext';
 import { categories, opportunityTypes, locations } from '@/lib/utils';
 import { Search, MapPin, Briefcase, Calendar, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-export const SearchFilter: React.FC = () => {
+export const SearchFilter = () => {
   const { filters, setFilters } = useOpportunityContext();
 
   const handleChange = (key: string, value: string) => {
@@ -42,7 +41,7 @@ export const SearchFilter: React.FC = () => {
     <div className="space-y-4">
       {filterFields.map((field) => (
         <div key={field.key} className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+          <label className="text-sm font-medium text-text-secondary flex items-center gap-2">
             <field.icon className="w-4 h-4" />
             {field.label}
             {filters[field.key as keyof typeof filters] && (
@@ -62,14 +61,14 @@ export const SearchFilter: React.FC = () => {
                 value={filters[field.key as keyof typeof filters] as string}
                 onChange={(e) => handleChange(field.key, e.target.value)}
                 placeholder={field.placeholder}
-                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl border border-input-border bg-input-bg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               />
               {filters[field.key as keyof typeof filters] && (
                 <button
                   onClick={() => clearFilter(field.key)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
-                  <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                  <X className="w-4 h-4 text-text-secondary hover:text-text-primary" />
                 </button>
               )}
             </div>
@@ -77,7 +76,7 @@ export const SearchFilter: React.FC = () => {
             <select
               value={filters[field.key as keyof typeof filters] as string}
               onChange={(e) => handleChange(field.key, e.target.value)}
-              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl border border-input-border bg-input-bg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
             >
               {field.options?.map((option: any) => (
                 <option key={option.value || option} value={option.value || option}>
@@ -93,9 +92,9 @@ export const SearchFilter: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="pt-4 border-t border-gray-200 dark:border-dark-border"
+          className="pt-4 border-t border-border"
         >
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-text-secondary">
             {Object.values(filters).filter(value => value !== '').length} active filters
           </p>
         </motion.div>

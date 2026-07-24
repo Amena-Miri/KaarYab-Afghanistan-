@@ -1,249 +1,214 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useOpportunityContext } from '@/context/OpportunityContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { OpportunityCard } from '@/components/opportunity/OpportunityCard';
-import { 
-  ArrowLeft, 
-  Bookmark, 
-  BookmarkCheck, 
-  MapPin, 
-  Calendar, 
-  Briefcase,
-  Clock,
-  ExternalLink,
-  Share2,
-  Users,
-  Eye,
-  Heart,
-  Building,
-  Tag,
-  FileText,
-  ListChecks,
-  Link as LinkIcon,
-  AlertCircle
-} from 'lucide-react';
-import { 
-  formatDate, 
-  formatDateShort, 
-  getDaysRemaining, 
-  isExpiringSoon, 
-  isExpired,
-  getCategoryColor,
-  getCategoryIcon,
-  getDeadlineStatus,
-  truncateText
-} from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { LoadingState } from '@/components/ui/LoadingState';
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
-const OpportunityDetailsPage: React.FC = () => {
+import { useOpportunityContext } from "@/context/OpportunityContext";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { ConfirmModal } from "@/components/ui/Modal";
+
+import {
+  ArrowLeft, Bookmark, BookmarkCheck, MapPin, Calendar, Briefcase,
+  Clock, ExternalLink, Share2, Eye, Heart, Building, Tag,
+  FileText, ListChecks, Link as LinkIcon, AlertCircle, Edit, Trash2, Sparkles, CheckCircle
+} from "lucide-react";
+
+import {
+  formatDateShort, getDaysRemaining, isExpired,
+  getCategoryColor, getCategoryIcon, getDeadlineStatus, cn
+} from "@/lib/utils";
+
+const OpportunityDetailsPage = () => {
   const params = useParams();
   const router = useRouter();
-  const { getOpportunityById, savedOpportunities, toggleSave, opportunities } = useOpportunityContext();
+  const { getOpportunityById, savedOpportunities, toggleSave, deleteOpportunity, opportunities } = useOpportunityContext();
+
   const [opportunity, setOpportunity] = useState(getOpportunityById(params.id as string));
   const [relatedOpportunities, setRelatedOpportunities] = useState<any[]>([]);
   const [copied, setCopied] = useState(false);
-
   const [isLoading, setIsLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-useEffect(() => {
-  const loadOpportunity = async () => {
-    setIsLoading(true);
-    const opp = getOpportunityById(params.id as string);
-    setOpportunity(opp);
-    setIsLoading(false);
-  };
-  loadOpportunity();
-}, [params.id, getOpportunityById]);
+  // ===== LOAD OPPORTUNITY =====
+  useEffect(() => {
+    const loadOpportunity = async () => {
+      setIsLoading(true);
+      const opp = getOpportunityById(params.id as string);
+      setOpportunity(opp);
+      setIsLoading(false);
+    };
+    loadOpportunity();
+  }, [params.id, getOpportunityById]);
 
+  // ===== RELATED OPPORTUNITIES =====
   useEffect(() => {
     const opp = getOpportunityById(params.id as string);
     setOpportunity(opp);
-
     if (opp) {
-      // Get related opportunities (same category or tags)
       const related = opportunities
-        .filter(o => o.id !== opp.id && (o.category === opp.category || o.tags.some(tag => opp.tags.includes(tag))))
+        .filter((item) =>
+          item.id !== opp.id &&
+          (item.category === opp.category || item.tags.some((tag) => opp.tags.includes(tag)))
+        )
         .slice(0, 3);
       setRelatedOpportunities(related);
     }
   }, [params.id, getOpportunityById, opportunities]);
 
+  // ===== LOADING =====
+  if (isLoading) return <LoadingState text="Loading opportunity details..." fullScreen />;
+
+  // ===== NOT FOUND =====
   if (!opportunity) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center px-4">
-        <Card className="max-w-md w-full text-center p-8">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Opportunity Not Found
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The opportunity you're looking for doesn't exist or has been removed.
-          </p>
+      <main className="min-h-screen flex items-center justify-center px-4">
+        <Card className="max-w-md w-full text-center rounded-3xl p-8">
+          <AlertCircle className="w-16 h-16 text-error mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-text-primary mb-2">Opportunity Not Found</h2>
+          <p className="text-text-secondary mb-6">The opportunity you're looking for doesn't exist.</p>
           <Link href="/opportunities">
-            <Button leftIcon={<ArrowLeft className="w-4 h-4" />}>
-              Back to Opportunities
-            </Button>
+            <Button leftIcon={<ArrowLeft className="w-4 h-4" />}>Back to Opportunities</Button>
           </Link>
         </Card>
-      </div>
+      </main>
     );
   }
 
   const isSaved = savedOpportunities.includes(opportunity.id);
-  const daysRemaining = getDaysRemaining(opportunity.deadline);
   const expired = isExpired(opportunity.deadline);
-  const expiringSoon = isExpiringSoon(opportunity.deadline);
   const categoryColor = getCategoryColor(opportunity.category);
   const deadlineStatus = getDeadlineStatus(opportunity.deadline);
 
+  // ===== SHARE =====
   const handleShare = async () => {
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    } catch (error) {
+      console.error("Failed to copy:", error);
     }
   };
 
-  if (isLoading) {
-        return <LoadingState text="Loading opportunity details..." fullScreen />;
-        }
+  // ===== DELETE =====
+  const handleDelete = () => setShowDeleteModal(true);
+  const confirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteOpportunity(opportunity.id);
+      router.push("/opportunities");
+    } catch (error) {
+      console.error("Error deleting:", error);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
+  const fadeUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.4 }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-
-        {/* Back Button */}
-        <Link href="/opportunities" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors mb-6">
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Opportunities</span>
-        </Link>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Header Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <Card className="p-6">
-                <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                  <div className="flex-1 min-w-0">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                      {opportunity.title}
-                    </h1>
-                    <div className="flex flex-wrap items-center gap-2 text-gray-600 dark:text-gray-400">
-                      <Building className="w-4 h-4" />
-                      <span className="font-medium">{opportunity.organization}</span>
-                    </div>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => toggleSave(opportunity.id)}
-                      className={`p-2 rounded-lg border-2 transition-all ${
-                        isSaved 
-                          ? 'border-primary bg-primary/10 text-primary' 
-                          : 'border-gray-200 dark:border-dark-border hover:border-primary'
-                      }`}
-                      aria-label={isSaved ? 'Unsave' : 'Save'}
-                    >
-                      {isSaved ? (
-                        <BookmarkCheck className="w-5 h-5" />
-                      ) : (
-                        <Bookmark className="w-5 h-5" />
-                      )}
-                    </button>
-                    <button
-                      onClick={handleShare}
-                      className="p-2 rounded-lg border-2 border-gray-200 dark:border-dark-border hover:border-primary transition-all"
-                      aria-label="Share"
-                    >
-                      <Share2 className="w-5 h-5" />
-                    </button>
-                    {copied && (
-                      <span className="text-sm text-green-500 font-medium flex items-center">
-                        Copied!
-                      </span>
-                    )}
+    <main className="min-h-screen pt-20 lg:pt-24 pb-16">
+      <div className="container-custom">
+        {/* ===== HEADER ===== */}
+        <motion.div {...fadeUp}>
+          <Card className="mb-8 rounded-3xl border border-border bg-surface p-6 md:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                  <Briefcase className="h-7 w-7 text-primary" />
+                </div>
+                <div>
+                  <Badge variant="primary" className="mb-2">Opportunity Details</Badge>
+                  <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{opportunity.title}</h1>
+                  <div className="flex items-center gap-2 text-text-secondary mt-1">
+                    <Building className="w-4 h-4" />
+                    <span>{opportunity.organization}</span>
                   </div>
                 </div>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => toggleSave(opportunity.id)}
+                  className={cn(
+                    "flex items-center justify-center rounded-xl border p-3 transition-all",
+                    isSaved ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary"
+                  )}
+                >
+                  {isSaved ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="flex items-center justify-center rounded-xl border border-border p-3 hover:border-primary transition-all"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+                <Link href={`/edit-opportunity/${opportunity.id}`}>
+                  <Button variant="outline" leftIcon={<Edit className="w-4 h-4" />}>Edit</Button>
+                </Link>
+              </div>
+            </div>
+            {copied && (
+              <div className="mt-4 flex items-center gap-2 text-success text-sm">
+                <CheckCircle className="w-4 h-4" /> Link copied successfully
+              </div>
+            )}
+          </Card>
+        </motion.div>
 
-                {/* Badges */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge className={`${categoryColor} font-medium`}>
-                    {getCategoryIcon(opportunity.category)} {opportunity.category}
-                  </Badge>
-                  <Badge variant="default">
-                    <Briefcase className="w-3 h-3 mr-1" />
-                    {opportunity.type}
-                  </Badge>
-                  <Badge variant="default">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    {opportunity.location}
-                  </Badge>
+        {/* ===== MAIN GRID ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* ===== LEFT CONTENT ===== */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* INFO BADGES */}
+            <motion.div {...fadeUp}>
+              <Card className="rounded-3xl border border-border bg-surface p-6">
+                <div className="flex flex-wrap gap-3">
+                  <Badge className={categoryColor}>{getCategoryIcon(opportunity.category)} {opportunity.category}</Badge>
+                  <Badge variant="default"><Briefcase className="w-3 h-3 mr-1" />{opportunity.type}</Badge>
+                  <Badge variant="default"><MapPin className="w-3 h-3 mr-1" />{opportunity.location}</Badge>
                   {opportunity.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="default">
-                      <Tag className="w-3 h-3 mr-1" />
-                      {tag}
-                    </Badge>
+                    <Badge key={tag} variant="default"><Tag className="w-3 h-3 mr-1" />{tag}</Badge>
                   ))}
                 </div>
-
-                {/* Deadline Status */}
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${deadlineStatus.color}`}>
+                <div className={cn("mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2", deadlineStatus.color)}>
                   <Clock className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    {expired ? 'Expired' : `${deadlineStatus.label}`}
-                  </span>
+                  <span className="text-sm font-medium">{expired ? "Expired" : deadlineStatus.label}</span>
                 </div>
               </Card>
             </motion.div>
 
-            {/* Description */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-primary" />
-                  Description
+            {/* DESCRIPTION */}
+            <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
+              <Card className="rounded-3xl border border-border bg-surface p-6">
+                <h2 className="flex items-center gap-2 text-xl font-bold text-text-primary mb-4">
+                  <FileText className="w-5 h-5 text-primary" /> Description
                 </h2>
-                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-                  {opportunity.description}
-                </p>
+                <p className="text-text-secondary leading-7 whitespace-pre-wrap">{opportunity.description}</p>
               </Card>
             </motion.div>
 
-            {/* Requirements */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <ListChecks className="w-5 h-5 text-primary" />
-                  Requirements
+            {/* REQUIREMENTS */}
+            <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
+              <Card className="rounded-3xl border border-border bg-surface p-6">
+                <h2 className="flex items-center gap-2 text-xl font-bold text-text-primary mb-4">
+                  <ListChecks className="w-5 h-5 text-primary" /> Requirements
                 </h2>
                 <ul className="space-y-2">
                   {opportunity.requirements.map((req, index) => (
-                    <li key={index} className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                      <span className="text-primary font-bold">•</span>
+                    <li key={index} className="flex items-start gap-3 text-text-secondary">
+                      <span className="mt-1 text-primary font-bold">•</span>
                       <span>{req}</span>
                     </li>
                   ))}
@@ -251,158 +216,96 @@ useEffect(() => {
               </Card>
             </motion.div>
 
-            {/* Apply Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-            >
-              <Card className="p-6 bg-primary/5 border-primary/20">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* APPLY SECTION */}
+            <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
+              <Card className="rounded-3xl border border-primary/20 bg-primary/5 p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Ready to Apply?
+                    <h3 className="flex items-center gap-2 text-xl font-bold text-text-primary">
+                      <Sparkles className="w-5 h-5 text-primary" /> Ready to Apply?
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">
-                      Take the next step towards your opportunity
-                    </p>
+                    <p className="text-text-secondary">Take the next step towards your opportunity.</p>
                   </div>
                   {!expired ? (
-                    <a
-                      href={opportunity.applyLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full sm:w-auto"
-                    >
-                      <Button 
-                        size="lg" 
-                        rightIcon={<ExternalLink className="w-4 h-4" />}
-                        className="w-full sm:w-auto"
-                      >
-                        Apply Now
-                      </Button>
+                    <a href={opportunity.applyLink} target="_blank" rel="noopener noreferrer">
+                      <Button size="lg" rightIcon={<ExternalLink className="w-4 h-4" />}>Apply Now</Button>
                     </a>
                   ) : (
-                    <Button size="lg" disabled className="w-full sm:w-auto opacity-50 cursor-not-allowed">
-                      Expired
-                    </Button>
+                    <Button size="lg" disabled>Expired</Button>
                   )}
                 </div>
               </Card>
             </motion.div>
           </div>
 
-          {/* Sidebar */}
+          {/* ===== SIDEBAR ===== */}
           <div className="space-y-6">
-            {/* Info Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <Card className="p-6">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-                  Opportunity Details
-                </h3>
+            {/* DETAIL CARD */}
+            <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
+              <Card className="rounded-3xl border border-border bg-surface p-6">
+                <h3 className="mb-5 text-lg font-bold text-text-primary">Opportunity Information</h3>
                 <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Building className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Organization</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{opportunity.organization}</p>
+                  {[
+                    { icon: Building, label: "Organization", value: opportunity.organization },
+                    { icon: MapPin, label: "Location", value: opportunity.location },
+                    {
+                      icon: Calendar,
+                      label: "Deadline",
+                      value: (
+                        <>
+                          {formatDateShort(opportunity.deadline)}
+                          {!expired && <p className="text-sm text-success">{getDaysRemaining(opportunity.deadline)} days remaining</p>}
+                        </>
+                      )
+                    },
+                    { icon: Eye, label: "Views", value: opportunity.views || 0 },
+                    { icon: Heart, label: "Saves", value: opportunity.saves || 0 }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex gap-3">
+                      <item.icon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm text-text-secondary">{item.label}</p>
+                        <p className="font-medium text-text-primary">{item.value}</p>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Location</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{opportunity.location}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Deadline</p>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {formatDateShort(opportunity.deadline)}
-                      </p>
-                      {!expired && (
-                        <p className="text-sm text-primary">
-                          {daysRemaining} days remaining
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Eye className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Views</p>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {opportunity.views || 0} views
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Heart className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Saves</p>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {opportunity.saves || 0} saves
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-dark-border">
-                  <Link href={opportunity.applyLink} target="_blank" rel="noopener noreferrer">
-                    <Button 
-                      fullWidth 
-                      rightIcon={<LinkIcon className="w-4 h-4" />}
-                      disabled={expired}
-                    >
-                      {expired ? 'Expired' : 'Apply Now'}
-                    </Button>
-                  </Link>
+                  ))}
                 </div>
               </Card>
             </motion.div>
 
-            {/* Related Opportunities */}
+            {/* ACTION BUTTONS */}
+            <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
+              <Card className="rounded-3xl border border-border bg-surface p-6">
+                <div className="space-y-3">
+                  <a href={opportunity.applyLink} target="_blank" rel="noopener noreferrer">
+                    <Button fullWidth rightIcon={<LinkIcon className="w-4 h-4" />} disabled={expired}>
+                      {expired ? "Expired" : "Apply Now"}
+                    </Button>
+                  </a>
+                  <div className="flex gap-3">
+                    <Link href={`/edit-opportunity/${opportunity.id}`} className="flex-1">
+                      <Button variant="outline" fullWidth leftIcon={<Edit className="w-4 h-4" />}>Edit</Button>
+                    </Link>
+                    <Button variant="danger" onClick={handleDelete} leftIcon={<Trash2 className="w-4 h-4" />}>Delete</Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* RELATED OPPORTUNITIES */}
             {relatedOpportunities.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <Card className="p-6">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-                    Similar Opportunities
-                  </h3>
-                  <div className="space-y-4">
-                    {relatedOpportunities.map((rel) => (
-                      <Link 
-                        key={rel.id} 
-                        href={`/opportunities/${rel.id}`}
-                        className="block group"
-                      >
-                        <div className="p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                          <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                            {rel.title}
-                          </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {rel.organization}
-                          </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="default" className="text-xs">
-                              {rel.category}
-                            </Badge>
-                            <Badge variant="default" className="text-xs">
-                              {rel.type}
-                            </Badge>
+              <motion.div {...fadeUp} transition={{ delay: 0.4 }}>
+                <Card className="rounded-3xl border border-border bg-surface p-6">
+                  <h3 className="mb-4 text-lg font-bold text-text-primary">Similar Opportunities</h3>
+                  <div className="space-y-3">
+                    {relatedOpportunities.map((item) => (
+                      <Link key={item.id} href={`/opportunities/${item.id}`} className="block group">
+                        <div className="rounded-2xl border border-border p-4 transition-all hover:border-primary/30 hover:bg-primary/5">
+                          <h4 className="font-semibold text-text-primary group-hover:text-primary transition-colors">{item.title}</h4>
+                          <p className="mt-1 text-sm text-text-secondary">{item.organization}</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <Badge variant="default">{item.category}</Badge>
+                            <Badge variant="default">{item.type}</Badge>
                           </div>
                         </div>
                       </Link>
@@ -414,7 +317,20 @@ useEffect(() => {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ===== DELETE MODAL ===== */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDelete}
+        title="Delete Opportunity"
+        message={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        isLoading={isDeleting}
+      />
+    </main>
   );
 };
 

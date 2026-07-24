@@ -99,9 +99,6 @@ export const opportunitySchema = yup.object({
       'Please enter a valid URL with http:// or https://'
     ),
 
-
-
-  // تغییر مهم این قسمت است
   tags: yup
     .string()
     .default('')
@@ -109,8 +106,6 @@ export const opportunitySchema = yup.object({
 
 
 });
-
-
 
 export type OpportunityFormValues = yup.InferType<
   typeof opportunitySchema

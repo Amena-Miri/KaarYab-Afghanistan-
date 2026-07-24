@@ -99,5 +99,120 @@ export const initialOpportunities: Opportunity[] = [
     createdAt: '2026-06-12T00:00:00.000Z',
     views: 78,
     saves: 12
-  }
+  },
+  {
+  id: '7',
+  title: 'Data Science Scholarship Program',
+  organization: 'Afghan Future Academy',
+  category: 'Scholarship',
+  location: 'Online',
+  type: 'Remote',
+  deadline: '2026-09-15',
+  description:
+    'A scholarship program for Afghan students interested in data science, artificial intelligence, and machine learning. Selected students will receive online mentorship and learning resources.',
+  requirements: [
+    'Basic Mathematics',
+    'English Communication Skills',
+    'Interest in Programming',
+    'High School Diploma'
+  ],
+  applyLink: 'https://example.com/apply/data-scholarship',
+  tags: [
+    'Data Science',
+    'AI',
+    'Scholarship',
+    'Online Learning'
+  ],
+  isFeatured: false,
+  createdAt: '2026-06-18T00:00:00.000Z',
+  views: 134,
+  saves: 29
+},
+
+{
+  id: '8',
+  title: 'UI/UX Design Internship',
+  organization: 'Creative Studio Afghanistan',
+  category: 'Internship',
+  location: 'Herat',
+  type: 'Hybrid',
+  deadline: '2026-08-25',
+  description:
+    'A practical internship opportunity for beginner designers. Learn user interface design, Figma, design systems, and work on real client projects.',
+  requirements: [
+    'Basic Figma Knowledge',
+    'Design Portfolio',
+    'Creative Thinking',
+    'Communication Skills'
+  ],
+  applyLink: 'https://example.com/apply/uiux-internship',
+  tags: [
+    'UI/UX',
+    'Figma',
+    'Design',
+    'Internship'
+  ],
+  isFeatured: true,
+  createdAt: '2026-06-20T00:00:00.000Z',
+  views: 221,
+  saves: 56
+},
+
+{
+  id: '9',
+  title: 'Full Stack Developer Bootcamp',
+  organization: 'Code Academy Afghanistan',
+  category: 'Training Program',
+  location: 'Online',
+  type: 'Remote',
+  deadline: '2026-10-01',
+  description:
+    'A three-month intensive bootcamp covering frontend and backend development including React, Node.js, databases, and deployment.',
+  requirements: [
+    'Basic JavaScript',
+    'Computer Skills',
+    'Commitment to Learning',
+    'Internet Access'
+  ],
+  applyLink: 'https://example.com/apply/fullstack-bootcamp',
+  tags: [
+    'React',
+    'Node.js',
+    'Programming',
+    'Bootcamp'
+  ],
+  isFeatured: false,
+  createdAt: '2026-06-22T00:00:00.000Z',
+  views: 178,
+  saves: 41
+},
+
+{
+  id: '10',
+  title: 'Digital Marketing Assistant',
+  organization: 'Afghan Media Network',
+  category: 'Job',
+  location: 'Kabul',
+  type: 'On-site',
+  deadline: '2026-08-05',
+  description:
+    'Entry-level position for someone interested in social media management, digital campaigns, content planning, and online marketing.',
+  requirements: [
+    'Social Media Knowledge',
+    'Basic Design Skills',
+    'Content Writing',
+    'Teamwork'
+  ],
+  applyLink: 'https://example.com/apply/digital-marketing',
+  tags: [
+    'Marketing',
+    'Social Media',
+    'Content Creation',
+    'Job'
+  ],
+  isFeatured: false,
+  createdAt: '2026-06-25T00:00:00.000Z',
+  views: 97,
+  saves: 18
+}
 ];
