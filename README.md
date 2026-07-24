@@ -1,4 +1,3 @@
-# KaarYab Afghanistan
 
 <h1 align="center">
   <span style="color:#84CC16;">KaarYab Afghanistan</span>
@@ -194,39 +193,79 @@ Built-in CV management system:
 
 
 ---
-
 # 📸 Screenshots
 
-
 <p align="center">
-
-<img src="./public/readme/home.png" 
-width="80%" 
-alt="Home Page">
-
-<br><br>
-
-<img src="./public/readme/opportunities.png"
-width="80%"
-alt="Opportunities Page">
-
-
-<br><br>
-
-<img src="./public/readme/dashboard.png"
-width="80%"
-alt="Dashboard">
-
-
-<br><br>
-
-<img src="./public/readme/cv-builder.png"
-width="80%"
-alt="CV Builder">
-
-
+  Screenshots of the main pages of KaarYab Afghanistan platform.
 </p>
 
+<table>
+  <tr>
+    <td align="center">
+      <b>🏠 Home Page</b>
+      <br><br>
+      <img src="./public/readme/home.png" width="350" alt="Home Page">
+    </td>
+    <td align="center">
+      <b>💼 Opportunities Page</b>
+      <br><br>
+      <img src="./public/readme/opportunities.png" width="350" alt="Opportunities Page">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <b>📄 Opportunity Details Page</b>
+      <br><br>
+      <img src="./public/readme/details.png" width="350" alt="Opportunity Details Page">
+    </td>
+    <td align="center">
+      <b>➕ Add Opportunity Page</b>
+      <br><br>
+      <img src="./public/readme/add-opportunity.png" width="350" alt="Add Opportunity Page">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <b>⭐ Saved Opportunities Page</b>
+      <br><br>
+      <img src="./public/readme/saved.png" width="350" alt="Saved Opportunities Page">
+    </td>
+    <td align="center">
+      <b>📊 Dashboard Page</b>
+      <br><br>
+      <img src="./public/readme/dashboard.png" width="350" alt="Dashboard Page">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <b>📑 CV Builder Page</b>
+      <br><br>
+      <img src="./public/readme/cv-builder.png" width="350" alt="CV Builder Page">
+    </td>
+    <td align="center">
+      <b>📞 Contact Page</b>
+      <br><br>
+      <img src="./public/readme/contact.png" width="350" alt="Contact Page">
+    </td>
+
+  </tr>
+
+  <tr>
+    <td align="center">
+      <b>ℹ️ About Page</b>
+      <br><br>
+      <img src="./public/readme/about.png" width="350" alt="About Page">
+    </td>
+    <td align="center">
+      <b>📱 Mobile Responsive Design</b>
+      <br><br>
+      <img src="./public/readme/mobile-responsive.png" width="180" alt="Mobile Responsive Design">
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -368,7 +407,7 @@ Possible future improvements:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/kaaryab-afghanistan.git
+git clone https://github.com/your-username/kaaryab-afghanistan-.git
 ```
 
 ## Navigate Project
