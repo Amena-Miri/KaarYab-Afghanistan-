@@ -33,18 +33,6 @@ A modern opportunity finder platform helping Afghan youth discover jobs, interns
 
 </p>
 
-
-<p align="center">
-
-<a href="#-project-overview">Overview</a> •
-<a href="#-features">Features</a> •
-<a href="#-screenshots">Screenshots</a> •
-<a href="#-technologies-used">Technologies</a> •
-<a href="#-installation">Installation</a>
-
-</p>
-
-
 ---
 
 # 📑 Table of Contents
@@ -410,23 +398,6 @@ http://localhost:3000
 
 ---
 
-# 📦 Production Build
-
-Create production build:
-
-```bash
-npm run build
-```
-
-Run production server:
-
-```bash
-npm start
-```
-
-
----
-
 # 🌍 Live Demo
 
 Coming Soon 🚀
@@ -462,11 +433,9 @@ This project demonstrates practical experience with:
 🎨 Graphic Designer  
 ⚡ Frontend Developer  
 
-🇦🇫 Afghanistan
-
 <br>
 
-<img src="./public/readme/logo.png" width="110" alt="KaarYab Logo">
+<img src="./public/logo.png" width="110" alt="KaarYab Logo">
 
 <br>
 
