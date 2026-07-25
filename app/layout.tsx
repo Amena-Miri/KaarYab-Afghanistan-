@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { OpportunityProvider } from "@/context/OpportunityContext";
 import { CVProvider } from "@/context/CVContext";
+import AppLoader from "@/components/AppLoader";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -48,7 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider>
+        <AppLoader>
+          <ThemeProvider>
           <OpportunityProvider>
             <CVProvider>
               <div className="min-h-screen flex flex-col bg-bg text-text-primary transition-colors duration-300">
@@ -61,6 +63,7 @@ export default function RootLayout({
             </CVProvider>
           </OpportunityProvider>
         </ThemeProvider>
+        </AppLoader>
       </body>
     </html>
   );

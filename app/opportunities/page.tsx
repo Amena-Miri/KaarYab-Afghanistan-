@@ -95,11 +95,6 @@ const OpportunitiesContent = () => {
     { id: "saved", label: "Saved", icon: TrendingUp },
   ];
 
-  const fadeUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4 },
-  };
   return (
     <main className="min-h-screen pt-20 lg:pt-24 pb-16">
       <div className="container-custom">
