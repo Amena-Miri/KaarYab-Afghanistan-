@@ -65,38 +65,43 @@ const HomePage: React.FC = () => {
 
   // CATEGORIES DATA
   const categories = [
-    {
-      name: "Jobs",
-      icon: Briefcase,
-      count: opportunities.filter((o) => o.category === "Job").length,
-    },
-    {
-      name: "Internships",
-      icon: GraduationCap,
-      count: opportunities.filter((o) => o.category === "Internship").length,
-    },
-    {
-      name: "Scholarships",
-      icon: Award,
-      count: opportunities.filter((o) => o.category === "Scholarship").length,
-    },
-    {
-      name: "Remote Work",
-      icon: Globe,
-      count: opportunities.filter((o) => o.category === "Remote Work").length,
-    },
-    {
-      name: "Courses",
-      icon: BookOpen,
-      count: opportunities.filter((o) => o.category === "Online Course").length,
-    },
-    {
-      name: "Volunteer",
-      icon: Users,
-      count: opportunities.filter((o) => o.category === "Volunteer Work")
-        .length,
-    },
-  ];
+  {
+    name: "Jobs",
+    value: "Job",
+    icon: Briefcase,
+    count: opportunities.filter((o) => o.category === "Job").length,
+  },
+  {
+    name: "Internships",
+    value: "Internship",
+    icon: GraduationCap,
+    count: opportunities.filter((o) => o.category === "Internship").length,
+  },
+  {
+    name: "Scholarships",
+    value: "Scholarship",
+    icon: Award,
+    count: opportunities.filter((o) => o.category === "Scholarship").length,
+  },
+  {
+    name: "Remote Work",
+    value: "Remote Work",
+    icon: Globe,
+    count: opportunities.filter((o) => o.category === "Remote Work").length,
+  },
+  {
+    name: "Courses",
+    value: "Online Course",
+    icon: BookOpen,
+    count: opportunities.filter((o) => o.category === "Online Course").length,
+  },
+  {
+    name: "Volunteer",
+    value: "Volunteer Work",
+    icon: Users,
+    count: opportunities.filter((o) => o.category === "Volunteer Work").length,
+  },
+];
 
   // FEATURES DATA
   const features = [
@@ -345,9 +350,7 @@ const HomePage: React.FC = () => {
                 className="group"
               >
                 <Link
-                  href={`/opportunities?category=${encodeURIComponent(
-                    cat.name
-                  )}`}
+                  href={`/opportunities?category=${encodeURIComponent(cat.value)}`}
                 >
                   <Card
                     hover
