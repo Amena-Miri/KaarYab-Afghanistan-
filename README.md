@@ -301,11 +301,15 @@ app/
 ├── about/
 ├── contact/
 ├── dashboard/
+├── api/
+├── edit-opportunity/
 ├── opportunities/
 │   └── [id]/
 ├── saved/
 ├── add-opportunity/
 ├── cv-builder/
+├── globals.css
+├── layout.tsx
 └── page.tsx
 
 components/
@@ -314,7 +318,9 @@ components/
 ├── forms/
 ├── layout/
 ├── opportunity/
-└── ui/
+├── ui/
+├── AppLoader.tsx
+└── ThemeProvider.tsx
 
 context/
 │
@@ -407,7 +413,7 @@ Possible future improvements:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/kaaryab-afghanistan-.git
+git clone https://github.com/amena-miri/kaaryab-afghanistan-.git
 ```
 
 ## Navigate Project
@@ -439,8 +445,7 @@ http://localhost:3000
 
 # 🌍 Live Demo
 
-Coming Soon 🚀
-
+https://kaar-yab-afghanistan.vercel.app/
 
 ---
 
