@@ -2,13 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-
 import { useOpportunityContext } from "@/context/OpportunityContext";
-
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { RecentOpportunitiesTable } from "@/components/dashboard/RecentOpportunitiesTable";
 import { CategoryChart } from "@/components/dashboard/CategoryChart";
-
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -22,6 +19,8 @@ import {
   ChevronRight,
   Sparkles,
   BarChart3,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 
 import { categories } from "@/lib/utils";
@@ -34,12 +33,14 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [stats, setStats] = useState({
-    total: 0,
-    remote: 0,
-    active: 0,
-    expiringSoon: 0,
-    totalViews: 0,
-  });
+  total: 0,
+  jobs: 0,
+  internships: 0,
+  scholarships: 0,
+  remote: 0,
+  expiringSoon: 0,
+  totalViews: 0,
+});
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,20 +57,34 @@ const DashboardPage = () => {
     const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     setStats({
-      total: opportunities.length,
+    total: opportunities.length,
 
-      remote: opportunities.filter((o) => o.type === "Remote").length,
+    jobs: opportunities.filter(
+      (o) => o.category === "Job"
+    ).length,
 
-      active: opportunities.filter((o) => new Date(o.deadline) >= now).length,
+    internships: opportunities.filter(
+      (o) => o.category === "Internship"
+    ).length,
 
-      expiringSoon: opportunities.filter((o) => {
-        const deadline = new Date(o.deadline);
+    scholarships: opportunities.filter(
+      (o) => o.category === "Scholarship"
+    ).length,
 
-        return deadline >= now && deadline <= sevenDaysFromNow;
-      }).length,
+    remote: opportunities.filter(
+      (o) => o.type === "Remote"
+    ).length,
 
-      totalViews: opportunities.reduce((sum, o) => sum + (o.views || 0), 0),
-    });
+    expiringSoon: opportunities.filter((o) => {
+      const deadline = new Date(o.deadline);
+      return deadline >= now && deadline <= sevenDaysFromNow;
+    }).length,
+
+    totalViews: opportunities.reduce(
+      (sum, o) => sum + (o.views || 0),
+      0
+    ),
+  });
   };
 
   const categoryData = categories
@@ -175,10 +190,24 @@ const DashboardPage = () => {
           />
 
           <DashboardCard
-            title="Active Opportunities"
-            value={stats.active}
-            icon={<TrendingUp className="w-5 h-5" />}
-            subtitle="Currently available"
+            title="Total Jobs"
+            value={stats.jobs}
+            icon={<Briefcase className="w-5 h-5" />}
+            subtitle="Available jobs"
+          />
+
+          <DashboardCard
+            title="Total Scholarships"
+            value={stats.scholarships}
+            icon={<Award className="w-5 h-5" />}
+            subtitle="Scholarship opportunities"
+          />
+
+          <DashboardCard
+            title="Total Internships"
+            value={stats.internships}
+            icon={<GraduationCap className="w-5 h-5" />}
+            subtitle="Internship opportunities"
           />
 
           <DashboardCard
@@ -333,10 +362,12 @@ const DashboardPage = () => {
                 mt-3
                 "
               >
-                <Badge variant="default">Active: {stats.active}</Badge>
-
                 <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
-
+                <Badge variant="default">Jobs: {stats.jobs}</Badge>
+                <Badge variant="warning">Scholarships: {stats.scholarships}</Badge>
+                <Badge variant="success">Internships: {stats.internships}</Badge>
+                <Badge variant="default">Remote: {stats.remote}</Badge>
+                <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
                 <Badge variant="success">Remote: {stats.remote}</Badge>
               </div>
             </div>
