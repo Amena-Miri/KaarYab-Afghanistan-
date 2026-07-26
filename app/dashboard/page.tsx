@@ -13,7 +13,6 @@ import { Badge } from "@/components/ui/Badge";
 import {
   Briefcase,
   Globe,
-  TrendingUp,
   Clock,
   Plus,
   ChevronRight,
@@ -122,15 +121,17 @@ const DashboardPage = () => {
   );
 }
 
+const recentOpportunities = [...opportunities]
+  .sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() -
+      new Date(a.createdAt).getTime()
+  )
+  .slice(0, 10);
+
   return (
-    <main
-      className="
-      min-h-screen
-      pt-20
-      lg:pt-24
-      pb-16
-    "
-    >
+    <main className="min-h-screen pt-20 lg:pt-24 pb-16">
+
       <div className="container-custom">
         {/* HEADER */}
         <Card className="mb-10 p-8 bg-surface border border-border rounded-3xl">
@@ -172,16 +173,8 @@ const DashboardPage = () => {
         </Card>
         {/* STATS */}
 
-        <div
-          className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-4
-          gap-4
-          mb-6
-          "
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
           <DashboardCard
             title="Total Opportunities"
             value={stats.total}
@@ -227,14 +220,7 @@ const DashboardPage = () => {
         {/* CHARTS SECTION */}
 
         <div
-          className="
-          grid
-          grid-cols-1
-          lg:grid-cols-2
-          gap-6
-          mb-8
-          "
-        >
+          className=" grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {categoryData.length > 0 ? (
             <CategoryChart
               data={categoryData}
@@ -258,33 +244,14 @@ const DashboardPage = () => {
         {/* RECENT OPPORTUNITIES */}
 
         <div className="mb-8">
-          <div
-            className="
-            flex
-            flex-wrap
-            justify-between
-            items-center
-            gap-4
-            mb-4
-            "
-          >
+          <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+
             <div>
-              <h2
-                className="
-                text-xl
-                font-semibold
-                text-text-primary
-                "
-              >
+              <h2 className="text-xl font-semibold text-text-primary">
                 Recent Opportunities
               </h2>
 
-              <p
-                className="
-                text-sm
-                text-text-secondary
-                "
-              >
+              <p className="text-sm text-text-secondary">
                 Latest added opportunities
               </p>
             </div>
@@ -300,72 +267,38 @@ const DashboardPage = () => {
           </div>
 
           <RecentOpportunitiesTable
-            opportunities={opportunities.slice(0, 10)}
+            opportunities={recentOpportunities}
             onDelete={deleteOpportunity}
           />
         </div>
 
         {/* INSIGHTS */}
 
-        <div
-          className="
-          p-5
-          bg-primary/5
-          border
-          border-primary/20
-          rounded-2xl
-          "
-        >
-          <div
-            className="
-            flex
-            items-start
-            gap-3
-            "
-          >
-            <Sparkles
-              className="
-              w-5
-              h-5
-              text-primary
-              mt-1
-              "
-            />
+        <div className="p-5 bg-primary/5 border border-primary/20 rounded-2xl">
+          <div className="flex items-start gap-3">
+
+            <Sparkles className="w-5 h-5 text-primary mt-1"/>
 
             <div>
-              <h3
-                className="
-                font-semibold
-                text-text-primary
-                "
-              >
+              <h3 className="font-semibold text-text-primary">
                 Platform Insights
               </h3>
 
-              <p
-                className="
-                text-sm
-                text-text-secondary
-                mt-1
-                "
-              >
+              <p className="text-sm text-text-secondary mt-1">
                 Total {stats.total} opportunities
                 {" • "}
                 {stats.totalViews} views
               </p>
 
-              <div
-                className="
-                flex
-                flex-wrap
-                gap-2
-                mt-3
-                "
-              >
+              <div className="flex flex-wrap gap-2  mt-3 ">
                 <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
                 <Badge variant="default">Jobs: {stats.jobs}</Badge>
-                <Badge variant="warning">Scholarships: {stats.scholarships}</Badge>
-                <Badge variant="success">Internships: {stats.internships}</Badge>
+                <Badge variant="warning">
+                  Scholarships: {stats.scholarships}
+                </Badge>
+                <Badge variant="success">
+                  Internships: {stats.internships}
+                </Badge>
                 <Badge variant="default">Remote: {stats.remote}</Badge>
                 <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
                 <Badge variant="success">Remote: {stats.remote}</Badge>
