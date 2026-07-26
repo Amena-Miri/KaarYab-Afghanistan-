@@ -6,7 +6,7 @@
 <p align="center">
   <img src="./public/readme/banner.png" 
        alt="KaarYab Afghanistan Banner" 
-       width="75%">
+       width="100%">
 </p>
 
 <p align="center">
@@ -452,6 +452,7 @@ https://kaar-yab-afghanistan.vercel.app/
 ## GitHub Link:
 
 https://github.com/Amena-Miri/KaarYab-Afghanistan-
+
 ---
 
 # 📚 Learning Outcomes
