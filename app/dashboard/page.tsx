@@ -293,14 +293,8 @@ const recentOpportunities = [...opportunities]
               <div className="flex flex-wrap gap-2  mt-3 ">
                 <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
                 <Badge variant="default">Jobs: {stats.jobs}</Badge>
-                <Badge variant="warning">
-                  Scholarships: {stats.scholarships}
-                </Badge>
-                <Badge variant="success">
-                  Internships: {stats.internships}
-                </Badge>
-                <Badge variant="default">Remote: {stats.remote}</Badge>
-                <Badge variant="warning">Expiring: {stats.expiringSoon}</Badge>
+                <Badge variant="warning">Scholarships: {stats.scholarships}</Badge>
+                <Badge variant="success">Internships: {stats.internships}</Badge>
                 <Badge variant="success">Remote: {stats.remote}</Badge>
               </div>
             </div>
